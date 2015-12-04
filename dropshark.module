@@ -29,16 +29,6 @@ function dropshark_menu() {
 }
 
 /**
- * Save an entry to the queue.
- *
- * @param array $data
- */
-function dropshark_queue_save($data) {
-  $queue = dropshark_get_queue();
-  $queue->add($data);
-}
-
-/**
  * Gets the configured DropShark queue processing class.
  *
  * @return DropSharkQueue
@@ -55,6 +45,52 @@ function dropshark_get_queue() {
   }
 
   return $queue;
+}
+
+/**
+ * Set data to be added to the queue
+ *
+ * Data is held in a static queue and added to the processing queue at the end
+ * of the page request.
+ *
+ * @param array $data
+ *   Data to add to the static queue.
+ * @param bool $reset
+ *   Reset the static queue.
+ *
+ * @return array
+ *   The queued data.
+ */
+function dropshark_queue_data($data = NULL, $reset = FALSE) {
+  static $queue = array();
+  static $registered = FALSE;
+
+  if (!$registered) {
+    drupal_register_shutdown_function('dropshark_queue_request_data');
+    $registered = TRUE;
+  }
+
+  if ($reset) {
+    $queue = array();
+  }
+
+  if ($data !== NULL) {
+    $queue[] = $data;
+  }
+
+  return $queue;
+}
+
+/**
+ * Save data from static request queue into persistent a queue.
+ */
+function dropshark_queue_request_data() {
+  // TODO: investigate adding multiple queued data items in a single call.
+  $queue = dropshark_get_queue();
+  foreach (dropshark_queue_data() as $data) {
+    $queue->add($data);
+  }
+  dropshark_queue_data(NULL, TRUE);
 }
 
 /**
