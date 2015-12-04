@@ -76,7 +76,7 @@ class DropSharkDbQueue implements DropSharkQueue {
     $key = md5(__METHOD__ . microtime() . mt_rand(0, 999999));
 
     $limit = variable_get('dropshark_queue_max_process', DROPSHARK_QUEUE_MAX_PROCESS_DEFAULT);
-    $query = 'UPDATE {dropshark_queue} SET lock_id = ? , lock_time = ? WHERE lock_id IS NULL LIMIT ' . $limit;
+    $query = 'UPDATE {dropshark_queue} SET lock_id = ? , lock_time = ? WHERE lock_id IS NULL ORDER BY CREATED LIMIT ' . $limit;
     db_query($query, array($key, $this->timestamp()));
 
     return $key;

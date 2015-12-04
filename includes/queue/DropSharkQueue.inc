@@ -1,7 +1,7 @@
 <?php
 
 /**
- *
+ * Interface DropSharkQueue.
  */
 interface DropSharkQueue {
 
