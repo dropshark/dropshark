@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * DropShark module code.
+ */
+
+define('DROPSHARK_HOST', 'http://data.dropshark.io');
+define('DROPSHARK_QUEUE_DEFAULT', 'DropSharkDbQueue');
+define('DROPSHARK_QUEUE_LOCK_MAX_DEFAULT', 300);
+define('DROPSHARK_QUEUE_MAX_PROCESS_DEFAULT', 100);
+define('DROPSHARK_REQUEST_DEFAULT', 'DropSharkRequestDefault');
+
+/**
+ * Save an entry to the queue.
+ *
+ * @param array $data
+ */
+function dropshark_queue_save($data) {
+  $queue = dropshark_get_queue();
+  $queue->add($data);
+}
+
+/**
+ * Gets the configured DropShark queue processing class.
+ *
+ * @return DropSharkQueue
+ *   The queue processor configured for use.
+ */
+function dropshark_get_queue() {
+  $queue = &drupal_static(__FUNCTION__);
+
+  if (!$queue) {
+    $request_class = variable_get('dropshark_request_class', DROPSHARK_REQUEST_DEFAULT);
+    $class = variable_get('dropshark_queue_class', DROPSHARK_QUEUE_DEFAULT);
+    $request = new $request_class();
+    $queue = new $class($request);
+  }
+
+  return $queue;
+}
+
+/**
+ * Process items in the DropShark queue.
+ */
+function dropshark_queue_process() {
+  $queue = dropshark_get_queue();
+  $queue->process();
+}

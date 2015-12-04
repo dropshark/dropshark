@@ -1,0 +1,9 @@
+name = DropShark
+description = Integration with DropShark.io monitoring, trending and alerts service.
+core = 7.x
+php = 5.2
+
+files[] = includes/queue/DropSharkQueue.inc
+files[] = includes/queue/DropSharkDbQueue.inc
+files[] = includes/request/DropSharkRequest.inc
+files[] = includes/request/DropSharkRequestDefault.inc
