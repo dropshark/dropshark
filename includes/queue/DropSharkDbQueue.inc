@@ -49,7 +49,7 @@ class DropSharkDbQueue implements DropSharkQueue {
    */
   public function clearLocks($timestamp = NULL) {
     if (!$timestamp) {
-      $timestamp = REQUEST_TIME - variable_get('dropshark_queue_lock_duration_max', DROPSHARK_QUEUE_LOCK_MAX_DEFAULT);
+      $timestamp = $this->timestamp() - variable_get('dropshark_queue_lock_duration_max', DROPSHARK_QUEUE_LOCK_MAX_DEFAULT);
     }
     $query = 'UPDATE {dropshark_queue} SET lock_id = NULL , lock_time = NULL WHERE lock_time < ?';
     db_query($query, array($timestamp));
