@@ -12,6 +12,23 @@ define('DROPSHARK_QUEUE_MAX_PROCESS_DEFAULT', 100);
 define('DROPSHARK_REQUEST_DEFAULT', 'DropSharkRequestDefault');
 
 /**
+ * Implements hook_menu().
+ */
+function dropshark_menu() {
+  $items['admin/config/services/dropshark'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => 'DropShark',
+    'description' => 'Configure your site to utilize the DropShark monitoring, trending, and alerts service.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('dropshark_admin_config'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'dropshark.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
  * Save an entry to the queue.
  *
  * @param array $data

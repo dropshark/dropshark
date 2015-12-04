@@ -2,6 +2,7 @@ name = DropShark
 description = Integration with DropShark.io monitoring, trending and alerts service.
 core = 7.x
 php = 5.2
+configure = admin/config/services/dropshark
 
 files[] = includes/queue/DropSharkQueue.inc
 files[] = includes/queue/DropSharkDbQueue.inc
