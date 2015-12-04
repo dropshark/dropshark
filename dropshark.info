@@ -8,3 +8,6 @@ files[] = includes/queue/DropSharkQueue.inc
 files[] = includes/queue/DropSharkDbQueue.inc
 files[] = includes/request/DropSharkRequest.inc
 files[] = includes/request/DropSharkRequestDefault.inc
+files[] = includes/request/DropSharkRequestTest.inc
+
+files[] = tests/DropSharkDbQueueTestCase.test
