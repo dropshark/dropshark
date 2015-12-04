@@ -43,3 +43,14 @@ function dropshark_schema() {
 
   return $schema;
 }
+
+/**
+ * Implements hook_uninstall().
+ */
+function dropshark_uninstall() {
+  variable_del('dropshark_queue_class');
+  variable_del('dropshark_queue_lock_duration_max');
+  variable_del('dropshark_queue_max_process');
+  variable_del('dropshark_request_class');
+  variable_del('dropshark_site_id');
+}
