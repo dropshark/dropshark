@@ -100,3 +100,71 @@ function dropshark_queue_process() {
   $queue = dropshark_get_queue();
   $queue->process();
 }
+
+/**
+ * Get available collectors.
+ */
+function dropshark_get_collectors($reset = FALSE) {
+  $collectors = drupal_static(__FUNCTION__);
+
+  if ($reset || ($collectors === NULL)) {
+    if ((!$reset) && $cache = cache_get('dropshark_collector_info')) {
+      $collectors = $cache->data;
+    } else {
+      $hook = 'dropshark_collector_info';
+      $collectors = array();
+      foreach (module_implements($hook) as $module) {
+        module_load_include('inc', $module, $module . '.dropshark');
+        $collectors = array_merge($collectors, module_invoke($module, $hook));
+      }
+      drupal_alter($hook, $collectors);
+      cache_set('dropshark_collector_info', $collectors);
+    }
+  }
+
+  return $collectors;
+}
+
+/**
+ * Instantiate a collector.
+ */
+function dropshark_get_collector($collector_id) {
+  $collectors = dropshark_get_collectors();
+
+  if (!empty($collectors[$collector_id]['class'])) {
+    $class = $collectors[$collector_id]['class'];
+    return new $class($collectors[$collector_id]);
+  }
+}
+
+/**
+ * Implements hook_dropshark_collector_info().
+ */
+function dropshark_dropshark_collector_info() {
+  $collectors['disk'] = array(
+    'class' => 'DropSharkDiskCollector',
+    'groups' => array('system'),
+  );
+
+  $collectors['drupal_status'] = array(
+    'class' => 'DropSharkDrupalStatusCollector',
+    'groups' => array('drupal'),
+  );
+
+  $collectors['memory'] = array(
+    'class' => 'DropSharkMemoryCollector',
+    'groups' => array('system'),
+  );
+
+  $collectors['opcache'] = array(
+    'class' => 'DropSharkPhpOpcacheCollector',
+    'groups' => array('system'),
+  );
+
+  $collectors['swap'] = array(
+    'class' => 'DropSharkSwapCollector',
+    'groups' => array('system'),
+  );
+
+  return $collectors;
+}

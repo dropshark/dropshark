@@ -4,6 +4,14 @@ core = 7.x
 php = 5.2
 configure = admin/config/services/dropshark
 
+files[] = includes/collector/DropSharkCollector.inc
+files[] = includes/collector/DropSharkCollectorBase.inc
+files[] = includes/collector/drupal/DropSharkDrupalStatusCollector.inc
+files[] = includes/collector/php/DropSharkPhpOpcacheCollector.inc
+files[] = includes/collector/system/DropSharkDiskCollector.inc
+files[] = includes/collector/system/DropSharkMemoryCollector.inc
+files[] = includes/collector/system/DropSharkSwapCollector.inc
+
 files[] = includes/queue/DropSharkQueue.inc
 files[] = includes/queue/DropSharkDbQueue.inc
 files[] = includes/request/DropSharkRequest.inc
