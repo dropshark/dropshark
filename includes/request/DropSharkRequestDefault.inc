@@ -9,7 +9,7 @@ class DropSharkRequestDefault implements DropSharkRequest {
    * {@inheritdoc}
    */
   public function getHost() {
-    return DROPSHARK_HOST;
+    return variable_get('dropshark_host', DROPSHARK_HOST_DEFAULT);
   }
 
   /**

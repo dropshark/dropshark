@@ -5,7 +5,7 @@
  * DropShark module code.
  */
 
-define('DROPSHARK_HOST', 'http://data.dropshark.io');
+define('DROPSHARK_HOST_DEFAULT', 'http://data.dropshark.io');
 define('DROPSHARK_QUEUE_DEFAULT', 'DropSharkDbQueue');
 define('DROPSHARK_QUEUE_LOCK_MAX_DEFAULT', 300);
 define('DROPSHARK_QUEUE_MAX_PROCESS_DEFAULT', 100);
