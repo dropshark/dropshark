@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * Class DropSharkAdminTestCase.
+ */
+class DropSharkAdminTestCase extends DrupalWebTestCase {
+
+  protected $adminUser;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'DropShark admin',
+      'description' => 'Tests administrative functionality.',
+      'group' => 'DropShark',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('dropshark');
+    $this->adminUser = $this->drupalCreateUser(array('administer site configuration'));
+  }
+
+  function testConfigScreen() {
+    $initial_help_text = 'In order to register your site with the DropShark service, you\'ll need to enter your credentials and site identifier.';
+    $configured_help_text = 'Your site is registered and will send data to DropShark. Log in to DropShark to analyze your data.';
+
+    // Initial configuration.
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('admin/config/services/dropshark');
+    $this->assertResponse(200);
+    $this->assertText($initial_help_text);
+
+    // Pretend we've configured this thing.
+    variable_set('dropshark_site_id', '0bb250ce-ffd5-4563-81fa-c8a165cd6af8');
+    variable_set('dropshark_site_token', 'some_random_token');
+
+    $this->drupalGet('admin/config/services/dropshark');
+    $this->assertResponse(200);
+    $this->assertNoText($initial_help_text);
+    $this->assertText('0bb250ce-ffd5-4563-81fa-c8a165cd6af8');
+    $this->assertText($configured_help_text);
+  }
+
+}

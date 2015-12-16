@@ -18,4 +18,5 @@ files[] = includes/request/DropSharkRequest.inc
 files[] = includes/request/DropSharkRequestDefault.inc
 files[] = includes/request/DropSharkRequestTest.inc
 
+files[] = tests/DropSharkAdminTestCase.test
 files[] = tests/DropSharkDbQueueTestCase.test
