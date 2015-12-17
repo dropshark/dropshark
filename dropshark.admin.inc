@@ -125,7 +125,7 @@ function dropshark_admin_config_submit(&$element, &$form_state) {
  */
 function dropshark_admin_config_check_submit() {
   $r = dropshark_get_request();
-  $result = $r->get('sites/token/' . variable_get('dropshark_site_id'));
+  $result = $r->get('sites/token');
 
   if (empty($result->data->site_id)) {
     drupal_set_message(t('Unable to verify the site connection.'), 'error');

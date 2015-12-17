@@ -34,7 +34,7 @@ class DropSharkRequestTest extends DropSharkRequestDefault {
     $result->code = 200;
 
     switch ($parts['path']) {
-      case '/sites/token/0bb250ce-ffd5-4563-81fa-c8a165cd6af8':
+      case '/sites/token':
         return $this->getSiteToken($options, $result);
         break;
     }
