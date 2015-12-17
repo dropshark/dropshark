@@ -35,7 +35,7 @@ class DropSharkRequestTest extends DropSharkRequestDefault {
 
     switch ($parts['path']) {
       case '/sites/token/0bb250ce-ffd5-4563-81fa-c8a165cd6af8':
-        return $this->checkSiteToken($options, $result);
+        return $this->getSiteToken($options, $result);
         break;
     }
 
@@ -95,9 +95,9 @@ class DropSharkRequestTest extends DropSharkRequestDefault {
   }
 
   /**
-   * Simulate a request to check a site token.
+   * Simulate a request to verify a site token.
    */
-  protected function postSiteToken($options, $result) {
+  protected function getSiteToken($options, $result) {
     if (empty($options['headers']['Authorization']) || $options['headers']['Authorization'] != 'valid_token') {
       $result->code = 400;
       $result->error = 'Bad Request';
@@ -111,9 +111,9 @@ class DropSharkRequestTest extends DropSharkRequestDefault {
   }
 
   /**
-   * Simulate a request to get a token.
+   * Simulate a request to obtain a site token.
    */
-  protected function getSiteToken($options, $result) {
+  protected function postSiteToken($options, $result) {
     if (empty($options['data']['user']) || empty($options['data']['password']) || empty($options['data']['site_id'])) {
       $result->code = 400;
       $result->error = 'Bad Request';
