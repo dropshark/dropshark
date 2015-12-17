@@ -17,31 +17,23 @@ class DropSharkQueueTestCase extends DrupalWebTestCase {
     $modules = array('dropshark');
     parent::setUp($modules);
     variable_set('dropshark_request_class', 'DropSharkRequestTest');
-  }
-
-  function testQueueAdd() {
-    $q = dropshark_get_queue();
-
-    // Add items to queue.
-    $q->add(array('data_1'));
-    $q->add(array('data_2'));
-    $q->add(array('data_3'));
-
-    // Verify the items were added.
-    $val = db_query('SELECT COUNT(*) FROM {dropshark_queue}')->fetchField();
-    $this->assertEqual(3, $val, '3 items in queue.');
+    variable_set('dropshark_site_token', 'valid_token');
   }
 
   function testQueueLock() {
     $q = dropshark_get_queue();
 
+    $count_query = 'SELECT COUNT(*) FROM {dropshark_queue}';
+    $lock_query = 'UPDATE {dropshark_queue} SET lock_id = ? , lock_time = ? LIMIT 1';
+
     // Add items to queue.
     $q->add(array('data_1'));
     $q->add(array('data_2'));
     $q->add(array('data_3'));
 
-    $count_query = 'SELECT COUNT(*) FROM {dropshark_queue}';
-    $lock_query = 'UPDATE {dropshark_queue} SET lock_id = ? , lock_time = ? LIMIT 1';
+    // Make sure our items made it into the queue.
+    $val = db_query($count_query)->fetchField();
+    $this->assertEqual(3, $val, '3 items in queue.');
 
     // Lock one item and process the queue.
     db_query($lock_query, array(__FUNCTION__, time() - DROPSHARK_QUEUE_LOCK_MAX_DEFAULT + 5));
