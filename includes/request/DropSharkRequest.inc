@@ -14,6 +14,18 @@ interface DropSharkRequest {
   public function getHost();
 
   /**
+   * Get data from DropShark.
+   *
+   * @param $endpoint
+   *   The endpoint to get data.
+   * @param array $data
+   *   Data to be sent in the request.
+   *
+   * @return stdClass
+   */
+  public function get($endpoint, $data = array());
+
+  /**
    * Post data to DropShark.
    *
    * @param $endpoint
@@ -23,6 +35,6 @@ interface DropSharkRequest {
    *
    * @return stdClass
    */
-  public function post($endpoint, $data);
+  public function post($endpoint, $data = array());
 
 }
