@@ -3,22 +3,13 @@
 /**
  * Class DropSharkRequestTest.
  */
-class DropSharkRequestTest implements DropSharkRequest {
+class DropSharkRequestTest extends DropSharkRequestDefault{
 
   /**
    * {@inheritdoc}
    */
-  public function getHost() {
-    return DROPSHARK_HOST;
-  }
+  protected function execute($url, $options = array()) {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function post($endpoint, $data) {
-    $result = new stdClass();
-    $result->data = drupal_http_build_query($data);
-    return $result;
   }
 
 }
