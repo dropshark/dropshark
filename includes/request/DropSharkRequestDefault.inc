@@ -15,13 +15,47 @@ class DropSharkRequestDefault implements DropSharkRequest {
   /**
    * {@inheritdoc}
    */
-  public function post($endpoint, $data) {
+  public function get($endpoint, $data = array()) {
+    $url = $this->getHost() . '/' . $endpoint;
+
+    if ($data) {
+      $url .= '&' . drupal_http_build_query($data);
+    }
+
+    return $this->execute($url);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function post($endpoint, $data = array()) {
     $url = $this->getHost() . '/' . $endpoint;
     $options['method'] = 'POST';
     $options['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
-    $options['data'] = drupal_http_build_query($data);
+
+    if ($data) {
+      $options['data'] = drupal_http_build_query($data);
+    }
+
+    return $this->execute($url, $options);
+  }
+
+  /**
+   * Execute the HTTP request.
+   *
+   * @param $url
+   *   The URL which is being requested.
+   * @param array $options
+   *   An array of options to send to drupal_http_request().
+   *
+   * @return object
+   *   The result from drupal_http_request().
+   */
+  protected function execute($url, $options = array()) {
     $result = drupal_http_request($url, $options);
-    $result->data = json_decode($result->data);
+    if (isset($result->data)) {
+      $result->data = json_decode($result->data);
+    }
     return $result;
   }
 
