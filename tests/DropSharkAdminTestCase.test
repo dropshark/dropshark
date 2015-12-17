@@ -64,4 +64,31 @@ class DropSharkAdminTestCase extends DrupalWebTestCase {
     $this->assertText($initial_help_text);
   }
 
+  function testRequirements() {
+    $reg_text = 'Information collected from your site cannot be submitted to DropShark. Please register your site to utilize DropShark.';
+    $conn_text = 'Information collected from your site cannot be submitted to DropShark. Please check your DropShark configuration.';
+    $ok_text = '<td class="status-title">DropShark</td>';
+
+    // Un-registered.
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('admin/reports/status');
+    $this->assertText($reg_text);
+    $this->assertNoText($conn_text);
+    $this->assertNoRaw($ok_text);
+
+    // Registered, but unable to connect.
+    variable_set('dropshark_site_token', 'invalid_token');
+    $this->drupalGet('admin/reports/status');
+    $this->assertNoText($reg_text);
+    $this->assertText($conn_text);
+    $this->assertNoRaw($ok_text);
+
+    // Successful connection.
+    variable_set('dropshark_site_token', 'valid_token');
+    $this->drupalGet('admin/reports/status');
+    $this->assertNoText($reg_text);
+    $this->assertNoText($conn_text);
+    $this->assertRaw($ok_text);
+  }
+
 }
