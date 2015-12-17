@@ -69,7 +69,7 @@ class DropSharkRequestTest extends DropSharkRequestDefault {
         return $this->postData($options, $result);
         break;
       case '/sites/token':
-        return $this->getSiteToken($options, $result);
+        return $this->postSiteToken($options, $result);
         break;
     }
 
@@ -97,7 +97,7 @@ class DropSharkRequestTest extends DropSharkRequestDefault {
   /**
    * Simulate a request to check a site token.
    */
-  protected function checkSiteToken($options, $result) {
+  protected function postSiteToken($options, $result) {
     if (empty($options['headers']['Authorization']) || $options['headers']['Authorization'] != 'valid_token') {
       $result->code = 400;
       $result->error = 'Bad Request';
