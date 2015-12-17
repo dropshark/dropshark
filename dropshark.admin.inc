@@ -90,7 +90,7 @@ function dropshark_admin_config($form, &$form_state) {
 function dropshark_admin_config_register_validate($form, &$form_state) {
 
   if (!empty($form_state['values']['email']) && !empty($form_state['values']['password']) && !empty($form_state['values']['site_id'])) {
-    $r = new DropSharkRequestDefault();
+    $r = dropshark_get_request();
     $data['user'] = $form_state['values']['email'];
     $data['password'] = $form_state['values']['password'];
     $data['site_id'] = $form_state['values']['site_id'];
@@ -123,7 +123,7 @@ function dropshark_admin_config_submit(&$element, &$form_state) {
  * Form submit handler for checking the site token on dropshark_admin_config.
  */
 function dropshark_admin_config_check_submit() {
-  $r = new DropSharkRequestDefault();
+  $r = dropshark_get_request();
   $result = $r->get('sites/token/' . variable_get('dropshark_site_id'));
 
   if (empty($result->data->site_id)) {
