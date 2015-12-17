@@ -106,6 +106,7 @@ function dropshark_admin_config_register_validate($form, &$form_state) {
       form_set_error('', $message);
     } else {
       $form_state['storage']['token'] = $result->data->token;
+      drupal_set_message(t('Your site has been registered with DropShark.'));
     }
   }
 
