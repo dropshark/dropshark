@@ -38,13 +38,30 @@ function dropshark_get_queue() {
   $queue = &drupal_static(__FUNCTION__);
 
   if (!$queue) {
-    $request_class = variable_get('dropshark_request_class', DROPSHARK_REQUEST_DEFAULT);
+    $request = dropshark_get_request();
     $class = variable_get('dropshark_queue_class', DROPSHARK_QUEUE_DEFAULT);
-    $request = new $request_class();
     $queue = new $class($request);
   }
 
   return $queue;
+}
+
+
+/**
+ * Gets the configured DropShark request handling class.
+ *
+ * @return DropSharkRequest
+ *   The request handler configured for use.
+ */
+function dropshark_get_request() {
+  $request = &drupal_static(__FUNCTION__);
+
+  if (!$request) {
+    $class = variable_get('dropshark_request_class', DROPSHARK_REQUEST_DEFAULT);
+    $request = new $class();
+  }
+
+  return $request;
 }
 
 /**
