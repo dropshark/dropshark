@@ -52,11 +52,29 @@ class DropSharkRequestDefault implements DropSharkRequest {
    *   The result from drupal_http_request().
    */
   protected function execute($url, $options = array()) {
+    $options = $this->setAuth($options);
     $result = drupal_http_request($url, $options);
     if (isset($result->data)) {
       $result->data = json_decode($result->data);
     }
     return $result;
+  }
+
+  /**
+   * Sets the site token into the request header.
+   *
+   * @param $options
+   *   The drupal_http_request() $options array.
+   *
+   * @return mixed
+   *   The resulting drupal_http_request() $options array.
+   */
+  protected function setAuth($options) {
+    if ($token = variable_get('dropshark_site_token')) {
+      $options['headers']['Authorization'] = $token;
+    }
+
+    return $options;
   }
 
 }
