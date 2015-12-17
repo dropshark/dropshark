@@ -17,6 +17,7 @@ class DropSharkAdminTestCase extends DrupalWebTestCase {
 
   function setUp() {
     parent::setUp('dropshark');
+    variable_set('dropshark_request_class', 'DropSharkRequestTest');
     $this->adminUser = $this->drupalCreateUser(array('administer site configuration'));
   }
 
@@ -27,18 +28,40 @@ class DropSharkAdminTestCase extends DrupalWebTestCase {
     // Initial configuration.
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/config/services/dropshark');
-    $this->assertResponse(200);
     $this->assertText($initial_help_text);
 
-    // Pretend we've configured this thing.
-    variable_set('dropshark_site_id', '0bb250ce-ffd5-4563-81fa-c8a165cd6af8');
-    variable_set('dropshark_site_token', 'some_random_token');
+    // Submit bad configs.
+    $edit['email'] = 'test_user';
+    $edit['password'] = 'pwd';
+    $edit['site_id'] = '0bb250ce-ffd5-4563-81fa-c8a165cd6af8';
+    $this->drupalPost('admin/config/services/dropshark', $edit, t('Register site'));
+    $this->assertText('Unable to register your site');
+    $this->assertNoText('Your site has been registered with DropShark');
 
-    $this->drupalGet('admin/config/services/dropshark');
-    $this->assertResponse(200);
+    // Submit valid configs.
+    $edit['password'] = 'password';
+    $this->drupalPost('admin/config/services/dropshark', $edit, t('Register site'));
+    $this->assertText('Your site has been registered with DropShark');
+    $this->assertNoText('Unable to register your site');
     $this->assertNoText($initial_help_text);
-    $this->assertText('0bb250ce-ffd5-4563-81fa-c8a165cd6af8');
     $this->assertText($configured_help_text);
+    $this->assertText('0bb250ce-ffd5-4563-81fa-c8a165cd6af8');
+
+    // Perform test connection.
+    $edit = array();
+    $this->drupalPost('admin/config/services/dropshark', $edit, t('Check'));
+    $this->assertText('Connection successfully verified');
+    $this->assertNoText('Unable to verify the site connection');
+
+    // Use a garbage token, test connection (expected to fail).
+    variable_set('dropshark_site_token', 'invalid_token');
+    $this->drupalPost('admin/config/services/dropshark', $edit, t('Check'));
+    $this->assertText('Unable to verify the site connection');
+    $this->assertNoText('Connection successfully verified');
+
+    // Perform reset.
+    $this->drupalPost('admin/config/services/dropshark', $edit, t('Reset'));
+    $this->assertText($initial_help_text);
   }
 
 }
