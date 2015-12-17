@@ -65,6 +65,9 @@ class DropSharkRequestTest extends DropSharkRequestDefault {
     }
 
     switch ($parts['path']) {
+      case '/data':
+        return $this->postData($options, $result);
+        break;
       case '/sites/token':
         return $this->getSiteToken($options, $result);
         break;
@@ -73,6 +76,21 @@ class DropSharkRequestTest extends DropSharkRequestDefault {
     $result->code = 404;
     $result->error = 'Not Found';
 
+    return $result;
+  }
+
+  /**
+   * Simulate a request submit site data.
+   */
+  protected function postData($options, $result) {
+    if (empty($options['headers']['Authorization']) || $options['headers']['Authorization'] != 'valid_token') {
+      $result->code = 400;
+      $result->error = 'Bad Request';
+      return $result;
+    }
+
+    $data = new stdClass();
+    $result->data = $data;
     return $result;
   }
 
