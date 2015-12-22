@@ -2,23 +2,31 @@
 
 class DropSharkMemoryCollector extends DropSharkCollectorBase {
 
+  protected $events = array('system');
+
   /**
    * {@inheritdoc}
    */
-  public function collect($context = array()) {
+  public function collect($event, $data = array()) {
 
-    $data = array();
+    if (!$this->respond($event)) {
+      return DropSharkCollector::RESPONSE_NONE;
+    }
 
-    $memory = $this->get_data();
+    $data = array('type' => 'memory');
+
+    $memory = $this->getData();
 
     if (empty($memory['Mem:'])) {
-      $data['code'] = 1;
-      return $data;
+      $data['code'] = 'unable_to_determine_memory';
+      dropshark_queue_data($data);
+      return DropSharkCollector::RESPONSE_COMPLETE;
     }
 
     $memory = $memory['Mem:'];
 
     $data['code'] = 0;
+    $data['server'] = $this->getServer();
     $data['free'] = $memory['free'];
     $data['used'] = $memory['used'];
     $data['cached'] = $memory['cached'];
@@ -26,6 +34,7 @@ class DropSharkMemoryCollector extends DropSharkCollectorBase {
     $data['used_percent_nocache'] = $memory['used'] / $memory['total'];
     $data['used_percent'] = ($memory['used'] - $data['cached']) / $memory['total'];
 
+    dropshark_queue_data($data);
     return $data;
   }
 
@@ -35,7 +44,7 @@ class DropSharkMemoryCollector extends DropSharkCollectorBase {
    * @return array
    *  Memory usage information, keyed by type ("Mem:", "Swap:").
    */
-  protected function get_data() {
+  protected function getData() {
     static $data = NULL;
 
     if ($data === NULL) {

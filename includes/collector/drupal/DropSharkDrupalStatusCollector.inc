@@ -2,10 +2,18 @@
 
 class DropSharkDrupalStatusCollector extends DropSharkCollectorBase {
 
+  protected $events = array('drupal');
+
   /**
    * {@inheritdoc}
    */
-  public function collect($context = array()) {
+  public function collect($event, $data = array()) {
+
+    if (!$this->respond($event)) {
+      return DropSharkCollector::RESPONSE_NONE;
+    }
+
+    $data = array('type' => 'drupal_status');
 
     // Load .install files
     include_once DRUPAL_ROOT . '/includes/install.inc';
@@ -35,7 +43,8 @@ class DropSharkDrupalStatusCollector extends DropSharkCollectorBase {
     $data['requirements'] = $requirements;
     $data['severity'] = $severities;
 
-    return $data;
+    dropshark_queue_data($data);
+    return DropSharkCollector::RESPONSE_COMPLETE;
   }
 
 }

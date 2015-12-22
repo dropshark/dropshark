@@ -5,18 +5,27 @@
  */
 class DropSharkPhpOpcacheCollector extends DropSharkCollectorBase {
 
-  public function collect($context = array()) {
-    $data = array();
+  protected $events = array('system');
 
-    if (!function_exists('opcache_get_status')) {
-      $data['code'] = 1;
-      return $data;
+  public function collect($event, $data = array()) {
+    $data = array('type' => 'opcache');
+
+    if (!$this->respond($event)) {
+      return DropSharkCollector::RESPONSE_NONE;
     }
 
-    $data = opcache_get_status(FALSE);
+    if (!function_exists('opcache_get_status')) {
+      $data['code'] = 'no_opcache';
+      dropshark_queue_data($data);
+      return DropSharkCollector::RESPONSE_COMPLETE;
+    }
+
+    $data += opcache_get_status(FALSE);
+    $data['server'] = $this->getServer();
     $data['code'] = 0;
 
-    return $data;
+    dropshark_queue_data($data);
+    return DropSharkCollector::RESPONSE_COMPLETE;
   }
 
 }

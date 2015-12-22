@@ -5,27 +5,38 @@
  */
 class DropSharkDiskCollector extends DropSharkCollectorBase {
 
+  protected $events = array('system');
+
   /**
    * {@inheritdoc}
    */
-  public function collect($context = array()) {
-    $data = array();
+  public function collect($event, $data = array()) {
 
-    if (empty($context['drive']) || !in_array($context['drive'], $this->get_disks())) {
-      $data['code'] = 1;
-      return $data;
+    if (!$this->respond($event)) {
+      return DropSharkCollector::RESPONSE_NONE;
     }
 
-    $disk = $this->get_data();
-    $disk = $disk[$context['drive']];
+    $data = array('type' => 'disk');
+
+    if (!$disk = $this->defaultDisk()) {
+      $data['code'] = 'unable_to_determine_disk';
+      dropshark_queue_data($data);
+      return DropSharkCollector::RESPONSE_COMPLETE;
+    }
+
+    $disks = $this->getData();
+    $disk_info = $disks[$disk];
 
     $data['code'] = 0;
-    $data['free'] = $disk['available'];
-    $data['used'] = $disk['used'];
+    $data['server'] = $this->getServer();
+    $data['disk'] = $disk;
+    $data['free'] = $disk_info['available'];
+    $data['used'] = $disk_info['used'];
     $data['total'] = $data['free'] + $data['used'];
     $data['used_percent'] = $data['used'] / $data['total'];
 
-    return $data;
+    dropshark_queue_data($data);
+    return DropSharkCollector::RESPONSE_COMPLETE;
   }
 
   /**
@@ -34,7 +45,7 @@ class DropSharkDiskCollector extends DropSharkCollectorBase {
    * @return array
    *   Data representing the existence and utilization of disks on the machine.
    */
-  public function get_data() {
+  public function getData() {
     static $data = NULL;
 
     if ($data === NULL) {
@@ -70,8 +81,34 @@ class DropSharkDiskCollector extends DropSharkCollectorBase {
    * @return array
    *   Mount points for disks on the machine.
    */
-  public function get_disks() {
-    return array_keys($this->get_data());
+  public function getDisks() {
+    return array_keys($this->getData());
+  }
+
+  /**
+   * Determine which disk is the default.
+   *
+   * Used where configuration data is not present or appears to be invalid.
+   */
+  public function defaultDisk() {
+    // Look for exact match.
+    if (array_search(DRUPAL_ROOT, $this->getDisks()) !== FALSE) {
+      return DRUPAL_ROOT;
+    }
+
+    // Iterate over the disks, look for the most-specific possibility.
+    $match = NULL;
+    foreach ($this->getDisks() as $disk) {
+      if (strpos($disk, DRUPAL_ROOT) === 0) {
+        // If there is no existing match, or we've found a more specific match,
+        // use it.
+        if (!$match || strlen($disk) > strlen($match)) {
+          $match = $disk;
+        }
+      }
+    }
+
+    return $match;
   }
 
 }
