@@ -83,7 +83,7 @@ function dropshark_queue_data($data = NULL, $reset = FALSE) {
   static $registered = FALSE;
 
   if (!$registered) {
-    drupal_register_shutdown_function('dropshark_queue_request_data');
+    drupal_register_shutdown_function('dropshark_finalize_request');
     $registered = TRUE;
   }
 
@@ -99,9 +99,50 @@ function dropshark_queue_data($data = NULL, $reset = FALSE) {
 }
 
 /**
- * Save data from static request queue into persistent a queue.
+ * Handles queuing of a collector for deferred processing.
+ *
+ * @param string $collector
+ *   The name of the collector.
+ * @param bool $reset
+ *   Reset the static queue.
+ *
+ * @return array
+ *   The queued collectors.
  */
-function dropshark_queue_request_data() {
+function dropshark_queue_processing($collector = NULL, $reset = FALSE) {
+  static $queue = array();
+  static $registered = FALSE;
+
+  if (!$registered) {
+    drupal_register_shutdown_function('dropshark_finalize_request');
+    $registered = TRUE;
+  }
+
+  if ($reset) {
+    $queue = array();
+  }
+
+  if ($collector !== NULL) {
+    $queue[$collector] = TRUE;
+  }
+
+  return $queue;
+}
+
+/**
+ * Finish processing on the end of the page request.
+ *
+ * Runs collectors which have been deferred until the end of the request, then
+ * saves data from static request queue into persistent a queue.
+ */
+function dropshark_finalize_request() {
+
+  foreach (array_keys(dropshark_queue_processing()) as $collector_name) {
+    /** @var DropSharkCollector $collector */
+    $collector = dropshark_get_collector($collector_name);
+    $collector->finalize();
+  }
+
   // TODO: investigate adding multiple queued data items in a single call.
   $queue = dropshark_get_queue();
   foreach (dropshark_queue_data() as $data) {
