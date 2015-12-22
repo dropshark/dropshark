@@ -160,9 +160,9 @@ function dropshark_queue_process() {
 }
 
 /**
- * Get available collectors.
+ * Get information on available data collectors.
  */
-function dropshark_get_collectors($reset = FALSE) {
+function dropshark_get_collector_info($reset = FALSE) {
   $collectors = drupal_static(__FUNCTION__);
 
   if ($reset || ($collectors === NULL)) {
@@ -187,7 +187,7 @@ function dropshark_get_collectors($reset = FALSE) {
  * Instantiate a collector.
  */
 function dropshark_get_collector($collector_id) {
-  $collectors = dropshark_get_collectors();
+  $collectors = dropshark_get_collector_info();
 
   if (!empty($collectors[$collector_id]['class'])) {
     $class = $collectors[$collector_id]['class'];
