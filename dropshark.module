@@ -201,28 +201,57 @@ function dropshark_get_collector($collector_id) {
 function dropshark_dropshark_collector_info() {
   $collectors['disk'] = array(
     'class' => 'DropSharkDiskCollector',
-    'groups' => array('system'),
   );
 
   $collectors['drupal_status'] = array(
     'class' => 'DropSharkDrupalStatusCollector',
-    'groups' => array('drupal'),
+  );
+
+  $collectors['drupal_updates'] = array(
+    'class' => 'DropSharkDrupalUpdateStatusCollector',
+  );
+
+  $collectors['memcache'] = array(
+    'class' => 'DropSharkMemcacheCollector',
   );
 
   $collectors['memory'] = array(
     'class' => 'DropSharkMemoryCollector',
-    'groups' => array('system'),
   );
 
   $collectors['opcache'] = array(
     'class' => 'DropSharkPhpOpcacheCollector',
-    'groups' => array('system'),
   );
 
   $collectors['swap'] = array(
     'class' => 'DropSharkSwapCollector',
-    'groups' => array('system'),
   );
 
   return $collectors;
+}
+
+/**
+ * Initiate data collection for an event.
+ *
+ * Routes data to available collectors in order to let each decide whether or
+ * not to log information.
+ *
+ * @param string $event
+ *   A value indicating an event or type of an event which has occurred.
+ * @param array $data
+ *   Additional data to send to the collector.
+ */
+function dropshark_handle_event($event, $data = array()) {
+
+  foreach (dropshark_get_collector_info() as $name => $info) {
+    /** @var DropSharkCollector $collector */
+    $collector = dropshark_get_collector($name);
+    $status = $collector->collect($event, $data);
+
+    // Queue deferred processing.
+    if ($status == DropSharkCollector::RESPONSE_DEFERRED) {
+      dropshark_queue_processing($name);
+    }
+  }
+
 }
