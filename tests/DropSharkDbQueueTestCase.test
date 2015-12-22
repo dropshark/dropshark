@@ -106,7 +106,7 @@ class DropSharkQueueTestCase extends DrupalWebTestCase {
     $this->assertEqual(3, $val, '3 items in static queue.');
 
     // Simulate end of requests to get data into persistent queue.
-    dropshark_queue_request_data();
+    dropshark_finalize_request();
     $data = dropshark_queue_data();
     $val = count($data);
     $this->assertEqual(0, $val, 'Static queue empty.');
