@@ -17,6 +17,7 @@ class DropSharkSwapCollector extends DropSharkMemoryCollector {
     }
 
     $data = array('type' => 'swap');
+    $data['server'] = $this->getServer();
 
     $memory = $this->getData();
 
@@ -35,7 +36,6 @@ class DropSharkSwapCollector extends DropSharkMemoryCollector {
     }
 
     $data['code'] = 0;
-    $data['server'] = $this->getServer();
     $data['free'] = $memory['free'];
     $data['used'] = $memory['used'];
     $data['total'] = $memory['total'];

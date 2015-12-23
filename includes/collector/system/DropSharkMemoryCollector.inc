@@ -14,6 +14,7 @@ class DropSharkMemoryCollector extends DropSharkCollectorBase {
     }
 
     $data = array('type' => 'memory');
+    $data['server'] = $this->getServer();
 
     $memory = $this->getData();
 
@@ -26,7 +27,6 @@ class DropSharkMemoryCollector extends DropSharkCollectorBase {
     $memory = $memory['Mem:'];
 
     $data['code'] = 0;
-    $data['server'] = $this->getServer();
     $data['free'] = $memory['free'];
     $data['used'] = $memory['used'];
     $data['cached'] = $memory['cached'];

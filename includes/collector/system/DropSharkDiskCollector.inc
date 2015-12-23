@@ -17,6 +17,7 @@ class DropSharkDiskCollector extends DropSharkCollectorBase {
     }
 
     $data = array('type' => 'disk');
+    $data['server'] = $this->getServer();
 
     if (!$disk = $this->defaultDisk()) {
       $data['code'] = 'unable_to_determine_disk';
@@ -28,7 +29,6 @@ class DropSharkDiskCollector extends DropSharkCollectorBase {
     $disk_info = $disks[$disk];
 
     $data['code'] = 0;
-    $data['server'] = $this->getServer();
     $data['disk'] = $disk;
     $data['free'] = $disk_info['available'];
     $data['used'] = $disk_info['used'];

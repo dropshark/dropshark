@@ -9,6 +9,7 @@ class DropSharkPhpOpcacheCollector extends DropSharkCollectorBase {
 
   public function collect($event, $data = array()) {
     $data = array('type' => 'opcache');
+    $data['server'] = $this->getServer();
 
     if (!$this->respond($event)) {
       return DropSharkCollector::RESPONSE_NONE;
@@ -21,7 +22,6 @@ class DropSharkPhpOpcacheCollector extends DropSharkCollectorBase {
     }
 
     $data += opcache_get_status(FALSE);
-    $data['server'] = $this->getServer();
     $data['code'] = 0;
 
     dropshark_queue_data($data);
