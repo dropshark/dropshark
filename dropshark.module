@@ -227,6 +227,10 @@ function dropshark_dropshark_collector_info() {
     'class' => 'DropSharkSwapCollector',
   );
 
+  $collectors['swap_activity'] = array(
+    'class' => 'DropSharkSwapActivityCollector',
+  );
+
   return $collectors;
 }
 
