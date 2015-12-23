@@ -32,7 +32,6 @@ class DropSharkSwapActivityCollector extends DropSharkCollectorBase {
     $data['si'] = $swap['si'];
     $data['so'] = $swap['so'];
 
-    dsm($data);
     dropshark_queue_data($data);
     return DropSharkCollector::RESPONSE_COMPLETE;
   }
