@@ -85,6 +85,15 @@ function dropshark_requirements($phase) {
       }
     }
 
+    $requirements['dropshark_linfo']['title'] = t('Linfo PHP library');
+    if ($linfo = dropshark_get_linfo()) {
+      $requirements['dropshark_linfo']['value'] = t('Installed: %version', array('%version' => $linfo->getVersion()));
+      $requirements['dropshark_linfo']['severity'] = REQUIREMENT_OK;
+    } else {
+      $requirements['dropshark_linfo']['value'] = t('Not found');
+      $requirements['dropshark_linfo']['severity'] = REQUIREMENT_WARNING;
+      $requirements['dropshark_linfo']['description'] = t('The DropShark module needs the Linfo library in order to collect system data.');
+    }
   }
 
   return $requirements;
