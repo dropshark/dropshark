@@ -29,11 +29,12 @@ class DropSharkDiskCollector extends DropSharkCollectorBase {
     $disk_info = $disks[$disk];
 
     $data['code'] = 0;
-    $data['disk'] = $disk;
-    $data['free'] = $disk_info['available'];
+    $data['device'] = $disk;
+    $data['mount'] = $disk;
+    $data['free'] = $disk_info['free'];
     $data['used'] = $disk_info['used'];
-    $data['total'] = $data['free'] + $data['used'];
-    $data['used_percent'] = $data['used'] / $data['total'];
+    $data['size'] = $data['free'] + $data['used'];
+    $data['used_percent'] = $data['used'] / $data['size'];
 
     dropshark_queue_data($data);
     return DropSharkCollector::RESPONSE_COMPLETE;
@@ -49,26 +50,12 @@ class DropSharkDiskCollector extends DropSharkCollectorBase {
     static $data = NULL;
 
     if ($data === NULL) {
-      $cmd = array_map('trim', explode("\n", `df`));
-
-      $header = array_shift($cmd);
-      $replace = array(
-        '-' => '_',
-        'mounted on' => 'mounted_on',
-        'use%' => 'use_percent',
-      );
-      $header = strtr(strtolower($header), $replace);
-
-      $format = '%s %s %s %s %s %s';
-      $header =  sscanf($header, $format);
+      $linfo = dropshark_get_linfo();
+      $parser = $linfo->getParser();
 
       $data = array();
-
-      foreach ($cmd as $line) {
-        if ($line = sscanf($line, $format)) {
-          $line = array_combine($header, $line);
-          $data[$line['mounted_on']] = $line;
-        }
+      foreach ($parser->getMounts() as $mount) {
+        $data[$mount['mount']] = $mount;
       }
     }
 
