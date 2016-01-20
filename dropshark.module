@@ -259,3 +259,19 @@ function dropshark_handle_event($event, $data = array()) {
   }
 
 }
+
+/**
+ * Instantiate the Linfo library.
+ *
+ * @return \Linfo\Linfo
+ */
+function dropshark_get_linfo() {
+  $linfo = &drupal_static(__FUNCTION__, NULL);
+
+  if ($linfo === NULL) {
+    $settings['show']['mounts_options'] = FALSE;
+    $linfo = new \Linfo\Linfo($settings);
+  }
+
+  return $linfo;
+}
