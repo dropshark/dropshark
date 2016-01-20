@@ -19,6 +19,12 @@ class DropSharkDiskCollector extends DropSharkLinfoCollector {
     $data = array('type' => 'disk');
     $data['server'] = $this->getServer();
 
+    if (!$this->hasLinfo()) {
+      $data['code'] = 'linfo_library_not_available';
+      dropshark_queue_data($data);
+      return DropSharkCollector::RESPONSE_COMPLETE;
+    }
+
     if (!$disk = $this->defaultDisk()) {
       $data['code'] = 'unable_to_determine_disk';
       dropshark_queue_data($data);

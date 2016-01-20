@@ -16,6 +16,12 @@ class DropSharkMemoryCollector extends DropSharkLinfoCollector {
     $data = array('type' => 'memory');
     $data['server'] = $this->getServer();
 
+    if (!$this->hasLinfo()) {
+      $data['code'] = 'linfo_library_not_available';
+      dropshark_queue_data($data);
+      return DropSharkCollector::RESPONSE_COMPLETE;
+    }
+
     $memory = $this->getData();
 
     if (empty($memory)) {
