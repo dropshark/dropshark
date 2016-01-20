@@ -3,7 +3,7 @@
 /**
  * Class DropSharkDiskCollector.
  */
-class DropSharkDiskCollector extends DropSharkCollectorBase {
+class DropSharkDiskCollector extends DropSharkLinfoCollector {
 
   protected $events = array('system');
 
@@ -50,11 +50,8 @@ class DropSharkDiskCollector extends DropSharkCollectorBase {
     static $data = NULL;
 
     if ($data === NULL) {
-      $linfo = dropshark_get_linfo();
-      $parser = $linfo->getParser();
-
       $data = array();
-      foreach ($parser->getMounts() as $mount) {
+      foreach ($this->parser->getMounts() as $mount) {
         $data[$mount['mount']] = $mount;
       }
     }

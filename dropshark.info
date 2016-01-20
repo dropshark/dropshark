@@ -11,6 +11,7 @@ files[] = includes/collector/drupal/DropSharkDrupalUpdateStatusCollector.inc
 files[] = includes/collector/memcache/DropSharkMemcacheCollector.inc
 files[] = includes/collector/php/DropSharkPhpOpcacheCollector.inc
 files[] = includes/collector/system/DropSharkDiskCollector.inc
+files[] = includes/collector/system/DropSharkLinfoCollector.inc
 files[] = includes/collector/system/DropSharkMemoryCollector.inc
 files[] = includes/collector/system/DropSharkSwapCollector.inc
 files[] = includes/collector/system/DropSharkSwapActivityCollector.inc
