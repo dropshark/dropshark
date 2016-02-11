@@ -19,7 +19,7 @@ class DropSharkRequestDefault implements DropSharkRequest {
     $url = $this->getHost() . '/' . $endpoint;
 
     if ($data) {
-      $url .= '&' . drupal_http_build_query($data);
+      $url .= '?' . drupal_http_build_query($data);
     }
 
     return $this->execute($url);
