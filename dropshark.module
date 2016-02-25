@@ -39,9 +39,10 @@ function dropshark_get_queue() {
   $queue = &drupal_static(__FUNCTION__);
 
   if (!$queue) {
+    $site_id = variable_get('dropshark_site_id');
     $request = dropshark_get_request();
     $class = variable_get('dropshark_queue_class', DROPSHARK_QUEUE_DEFAULT);
-    $queue = new $class($request);
+    $queue = new $class($request, $site_id);
   }
 
   return $queue;

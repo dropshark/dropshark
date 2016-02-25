@@ -8,9 +8,10 @@ interface DropSharkQueue {
   /**
    * DropSharkQueue constructor.
    *
-   * @param DropSharkRequest.
+   * @param DropSharkRequest $request
+   * @param integer $site_id
    */
-  public function __construct($request);
+  public function __construct($request, $site_id);
 
   /**
    * Add items to the DropShark queue.

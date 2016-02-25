@@ -8,11 +8,14 @@ class DropSharkDbQueue implements DropSharkQueue {
   /** @var DropSharkRequest */
   protected $request;
 
+  protected $site_id;
+
   /**
    * {@inheritdoc}
    */
-  public function __construct($request) {
+  public function __construct($request, $site_id) {
     $this->request = $request;
+    $this->site_id = $site_id;
   }
 
   /**
@@ -123,8 +126,9 @@ class DropSharkDbQueue implements DropSharkQueue {
    */
   protected function submitItems($key) {
     $items = $this->getItems($key);
-    $data = json_encode($items);
-    return $this->request->post('data', array('data' => $data));
+    $params['data'] = json_encode($items);
+    $params['site_id'] = $this->site_id;
+    return $this->request->post('data', $params);
   }
 
 }
