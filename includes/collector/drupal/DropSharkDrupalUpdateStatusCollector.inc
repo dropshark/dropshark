@@ -29,8 +29,23 @@ class DropSharkDrupalUpdateStatusCollector extends DropSharkCollectorBase {
       module_load_include('inc', 'update', 'update.compare');
       $info = update_calculate_project_data($available);
 
+      $status_map = array(
+        1 => 'not_secure',
+        2 => 'revoked',
+        3 => 'not_supported',
+        4 => 'not_current',
+        5 => 'current',
+        -1 => 'not_checked',
+        -2 => 'unknown',
+        -3 => 'not_fetched',
+        -4 => 'fetch_pending',
+      );
+
       foreach ($info as $project) {
-        $data['status'][$project['status']][] = $project['name'];
+        $status = $project['status'];
+        if (isset($status_map[$status])) {
+          $data['status'][$status_map[$status]][] = $project['name'];
+        }
         $data['projects'][$project['name']] = $project['existing_version'];
       }
       $data['code'] = 0;
