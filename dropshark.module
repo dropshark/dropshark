@@ -94,6 +94,7 @@ function dropshark_queue_data($data = NULL, $reset = FALSE) {
   }
 
   if ($data !== NULL) {
+    $data['ds_timestamp'] = time();
     $queue[] = $data;
   }
 
