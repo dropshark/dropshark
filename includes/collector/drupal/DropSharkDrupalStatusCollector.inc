@@ -26,15 +26,23 @@ class DropSharkDrupalStatusCollector extends DropSharkCollectorBase {
 
     // Count number of requirements at each status.
     $severities = array(
-      REQUIREMENT_ERROR => 0,
-      REQUIREMENT_INFO => 0,
-      REQUIREMENT_OK => 0,
-      REQUIREMENT_WARNING => 0,
+      'error' => 0,
+      'info' => 0,
+      'ok' => 0,
+      'warning' => 0,
+      'none' => 0,
+    );
+    $severities_map = array(
+      REQUIREMENT_ERROR => 'error',
+      REQUIREMENT_INFO => 'info',
+      REQUIREMENT_OK => 'ok',
+      REQUIREMENT_WARNING => 'warning',
       'none' => 0,
     );
     foreach ($requirements as $requirement) {
       if (isset($requirement['severity'])) {
-        $severities[$requirement['severity']]++;
+        $key = $severities_map[$requirement['severity']];
+        $severities[$key]++;
       } else {
         $severities['none']++;
       }
