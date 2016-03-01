@@ -19,9 +19,7 @@ class DropSharkSwapCollector extends DropSharkMemoryCollector {
 
     $data = $this->defaultResult();
 
-    if (!$this->hasLinfo()) {
-      $data['code'] = 'linfo_library_not_available';
-      dropshark_queue_data($data);
+    if (!$this->checkLinfo($data)) {
       return DropSharkCollector::RESPONSE_COMPLETE;
     }
 
