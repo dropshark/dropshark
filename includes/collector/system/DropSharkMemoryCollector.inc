@@ -3,6 +3,7 @@
 class DropSharkMemoryCollector extends DropSharkLinfoCollector {
 
   protected $events = array('system');
+  protected $type = 'memory';
 
   /**
    * {@inheritdoc}
@@ -13,8 +14,7 @@ class DropSharkMemoryCollector extends DropSharkLinfoCollector {
       return DropSharkCollector::RESPONSE_NONE;
     }
 
-    $data = array('type' => 'memory');
-    $data['server'] = $this->getServer();
+    $data = $this->defaultResult();
 
     if (!$this->hasLinfo()) {
       $data['code'] = 'linfo_library_not_available';

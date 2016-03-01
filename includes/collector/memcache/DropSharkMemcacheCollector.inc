@@ -3,6 +3,7 @@
 class DropSharkMemcacheCollector extends DropSharkCollectorBase {
 
   protected $events = array('system');
+  protected $type = 'memcache';
 
   /**
    * {@inheritdoc}
@@ -13,7 +14,7 @@ class DropSharkMemcacheCollector extends DropSharkCollectorBase {
       return DropSharkCollector::RESPONSE_NONE;
     }
 
-    $data = array('type' => 'memcache');
+    $data = $this->defaultResult();
 
     if (!module_exists('memcache')) {
       $data['code'] = 'memcache_module_not_exists';

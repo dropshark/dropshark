@@ -6,6 +6,7 @@
 class DropSharkDiskCollector extends DropSharkLinfoCollector {
 
   protected $events = array('system');
+  protected $type = 'disk';
 
   /**
    * {@inheritdoc}
@@ -30,6 +31,8 @@ class DropSharkDiskCollector extends DropSharkLinfoCollector {
       dropshark_queue_data($data);
       return DropSharkCollector::RESPONSE_COMPLETE;
     }
+
+    $data['ds_collector_id'] .= "|{$disk}";
 
     $disks = $this->getData();
     $disk_info = $disks[$disk];

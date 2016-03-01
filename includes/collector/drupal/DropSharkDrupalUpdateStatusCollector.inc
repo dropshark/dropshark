@@ -3,6 +3,7 @@
 class DropSharkDrupalUpdateStatusCollector extends DropSharkCollectorBase {
 
   protected $events = array('drupal');
+  protected $type = 'drupal_updates';
 
   /**
    * {@inheritdoc}
@@ -13,7 +14,7 @@ class DropSharkDrupalUpdateStatusCollector extends DropSharkCollectorBase {
       return DropSharkCollector::RESPONSE_NONE;
     }
 
-    $data = array('type' => 'drupal_updates');
+    $data = $this->defaultResult();
 
     if (!module_exists('update')) {
       $data['code'] = 'update_not_enabled';

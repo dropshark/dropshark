@@ -7,6 +7,7 @@ abstract class DropSharkCollectorBase implements DropSharkCollector {
 
   protected $definition;
   protected $events = array();
+  protected $type = NULL;
 
   /**
    * {@inheritdoc}
@@ -47,11 +48,37 @@ abstract class DropSharkCollectorBase implements DropSharkCollector {
   }
 
   /**
+   * The server where the data is being collected.
+   *
+   * Metrics specific to a server should specify which server they're collected
+   * from.
+   *
    * @return string
    */
   public function getServer() {
     // TODO: make this dynamic, configurable.
     return 'default';
+  }
+
+  /**
+   * A default value to be used for a collector's result.
+   *
+   * This contains the properties needed to report a valid result. Collectors
+   * will add and overwrite properties as needed.
+   *
+   * Note: 'ds_timestamp' property gets added when the collected data is queued.
+   *
+   * @return array
+   */
+  protected function defaultResult() {
+    $result = array();
+
+    $result['type'] = $this->type;
+    $result['server'] = $this->getServer();
+    $result['ds_collector_id'] = "{$result['type']}|{$result['server']}";
+    $result['code'] = 'unknown_error';
+
+    return $result;
   }
 
 }

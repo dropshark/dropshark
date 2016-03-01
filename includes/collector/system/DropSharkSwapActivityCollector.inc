@@ -6,6 +6,7 @@
 class DropSharkSwapActivityCollector extends DropSharkCollectorBase {
 
   protected $events = array('system');
+  protected $type = 'swap_activity';
   protected $timespan = 3;
 
   /**
@@ -17,9 +18,7 @@ class DropSharkSwapActivityCollector extends DropSharkCollectorBase {
       return DropSharkCollector::RESPONSE_NONE;
     }
 
-    $data = array('type' => 'swap_activity');
-    $data['server'] = $this->getServer();
-
+    $data = $this->defaultResult();
     $swap = $this->getData();
 
     if (!isset($swap['si']) || !isset($swap['so'])) {

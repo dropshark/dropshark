@@ -6,6 +6,7 @@
 class DropSharkSwapCollector extends DropSharkMemoryCollector {
 
   protected $events = array('system');
+  protected $type = 'swap';
 
   /**
    * {@inheritdoc}
@@ -16,8 +17,7 @@ class DropSharkSwapCollector extends DropSharkMemoryCollector {
       return DropSharkCollector::RESPONSE_NONE;
     }
 
-    $data = array('type' => 'swap');
-    $data['server'] = $this->getServer();
+    $data = $this->defaultResult();
 
     if (!$this->hasLinfo()) {
       $data['code'] = 'linfo_library_not_available';

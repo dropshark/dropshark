@@ -3,6 +3,7 @@
 class DropSharkDrupalStatusCollector extends DropSharkCollectorBase {
 
   protected $events = array('drupal');
+  protected $type = 'drupal_status';
 
   /**
    * {@inheritdoc}
@@ -13,7 +14,7 @@ class DropSharkDrupalStatusCollector extends DropSharkCollectorBase {
       return DropSharkCollector::RESPONSE_NONE;
     }
 
-    $data = array('type' => 'drupal_status');
+    $data = $this->defaultResult();
 
     // Load .install files
     include_once DRUPAL_ROOT . '/includes/install.inc';
