@@ -21,7 +21,13 @@ class DropSharkPhpOpcacheCollector extends DropSharkCollectorBase {
       return DropSharkCollector::RESPONSE_COMPLETE;
     }
 
-    $data += opcache_get_status(FALSE);
+    if (!$status = opcache_get_status(FALSE)) {
+      $data['code'] = 'opcache_not_enabled';
+      dropshark_queue_data($data);
+      return DropSharkCollector::RESPONSE_COMPLETE;
+    }
+
+    $data += $status;
     $data['code'] = 0;
 
     dropshark_queue_data($data);
