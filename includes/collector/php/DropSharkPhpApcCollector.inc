@@ -28,7 +28,7 @@ class DropSharkPhpApcCollector extends DropSharkCollectorBase {
     }
 
     $data += $info;
-    $info['sma'] = apc_sma_info(TRUE);
+    $data['sma'] = apc_sma_info(TRUE);
     $data['code'] = 0;
 
     dropshark_queue_data($data);
