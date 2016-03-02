@@ -9,6 +9,7 @@ files[] = includes/collector/DropSharkCollectorBase.inc
 files[] = includes/collector/drupal/DropSharkDrupalStatusCollector.inc
 files[] = includes/collector/drupal/DropSharkDrupalUpdateStatusCollector.inc
 files[] = includes/collector/memcache/DropSharkMemcacheCollector.inc
+files[] = includes/collector/php/DropSharkPhpApcCollector.inc
 files[] = includes/collector/php/DropSharkPhpOpcacheCollector.inc
 files[] = includes/collector/system/DropSharkDiskCollector.inc
 files[] = includes/collector/system/DropSharkLinfoCollector.inc

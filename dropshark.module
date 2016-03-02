@@ -211,6 +211,10 @@ function dropshark_get_collector($collector_id) {
  * Implements hook_dropshark_collector_info().
  */
 function dropshark_dropshark_collector_info() {
+  $collectors['apc'] = array(
+    'class' => 'DropSharkPhpApcCollector',
+  );
+
   $collectors['disk'] = array(
     'class' => 'DropSharkDiskCollector',
   );
