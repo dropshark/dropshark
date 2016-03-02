@@ -43,7 +43,7 @@ function dropshark_admin_config($form, &$form_state) {
       '#element_validate' => array('dropshark_admin_config_register_validate'),
     );
   } else {
-    $params['!link'] = l('DropShark', 'http://dashboard.dropshark.io');
+    $params['!link'] = l('DropShark', 'http://app.dropshark.io');
     $form['instructions']['#markup'] = t('Your site is registered and will send data to DropShark. Log in to !link to analyze your data.', $params);
     $form['instructions']['#prefix'] = '<p>';
     $form['instructions']['#suffix'] = '</p>';
