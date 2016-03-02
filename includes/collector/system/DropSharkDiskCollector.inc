@@ -89,7 +89,7 @@ class DropSharkDiskCollector extends DropSharkLinfoCollector {
     // Iterate over the disks, look for the most-specific possibility.
     $match = NULL;
     foreach ($this->getDisks() as $disk) {
-      if (strpos($disk, DRUPAL_ROOT) === 0) {
+      if (strpos(DRUPAL_ROOT, $disk) === 0) {
         // If there is no existing match, or we've found a more specific match,
         // use it.
         if (!$match || strlen($disk) > strlen($match)) {
