@@ -79,6 +79,22 @@ function dropshark_admin_config($form, &$form_state) {
       '#type' => 'submit',
       '#submit' => array('dropshark_admin_config_reset_submit'),
     );
+
+    $form['collect'] = array(
+      '#title' => t('Collect'),
+      '#type' => 'fieldset',
+    );
+    $form['collect']['instructions'][0]['#markup'] = t('DropShark will attempt to submit your data during Drupal\'s cron. You may also want to set up a dedicated cron task dedicated to collecting DropShark data.');
+    $form['collect']['instructions'][0]['#prefix'] = '<p>';
+    $form['collect']['instructions'][0]['#suffix'] = '</p>';
+    $form['collect']['instructions'][1]['#markup'] = t('Use this function to perform a real time collection of data from your site.');
+    $form['collect']['instructions'][1]['#prefix'] = '<p>';
+    $form['collect']['instructions'][1]['#suffix'] = '</p>';
+    $form['collect']['submit'] = array(
+      '#value' => t('Collect'),
+      '#type' => 'submit',
+      '#submit' => array('dropshark_admin_config_collect_submit'),
+    );
   }
 
   return $form;
@@ -139,4 +155,13 @@ function dropshark_admin_config_check_submit() {
  */
 function dropshark_admin_config_reset_submit() {
   variable_del('dropshark_site_token');
+}
+
+/**
+ * Form submit handler for performing a data collection and submission.
+ */
+function dropshark_admin_config_collect_submit() {
+  dropshark_handle_event('all');
+  dropshark_queue_process();
+  drupal_set_message(t('Data collection complete.'));
 }
