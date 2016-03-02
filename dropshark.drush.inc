@@ -53,7 +53,9 @@ function drush_dropshark_collect() {
   $url = rtrim($url, '/') . '/dropshark/collect?' . drupal_http_build_query($params);
 
   $result = drupal_http_request($url);
-  drush_log(print_r($result, TRUE), 'ok');
+  if ($debug) {
+    drush_log(print_r($result, TRUE), 'ok');
+  }
   if ($result->code != 200) {
     drush_log(dt('HTTP request failed !code.', array('!code' => $result->code)), 'error');
     return;
