@@ -299,3 +299,13 @@ function dropshark_get_linfo() {
 
   return $linfo;
 }
+
+/**
+ * Implements hook_cron().
+ */
+function dropshark_cron() {
+  if (variable_get('dropshark_cron', TRUE)) {
+    dropshark_handle_event('all');
+    dropshark_queue_process();
+  }
+}
