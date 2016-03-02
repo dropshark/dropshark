@@ -22,7 +22,7 @@ class DropSharkPhpApcCollector extends DropSharkCollectorBase {
     }
 
     if (!$info = apc_cache_info('', TRUE)) {
-      $data['code'] = 'opcache_not_enabled';
+      $data['code'] = 'apc_not_enabled';
       dropshark_queue_data($data);
       return DropSharkCollector::RESPONSE_COMPLETE;
     }
