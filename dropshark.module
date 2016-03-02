@@ -26,6 +26,15 @@ function dropshark_menu() {
     'file' => 'dropshark.admin.inc',
   );
 
+  $items['dropshark/collect'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => 'DropShark',
+    'description' => 'Endpoint to trigger data collection.',
+    'page callback' => 'dropshark_collect_page',
+    'access callback' => TRUE,
+    'file' => 'dropshark.pages.inc',
+  );
+
   return $items;
 }
 
