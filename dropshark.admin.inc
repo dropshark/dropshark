@@ -110,6 +110,7 @@ function dropshark_admin_config_register_validate($form, &$form_state) {
     $data['user'] = $form_state['values']['email'];
     $data['password'] = $form_state['values']['password'];
     $data['site_id'] = $form_state['values']['site_id'];
+    $data['fingerprint'] = dropshark_site_fingerprint();
     $result = $r->post('sites/token', $data);
 
     if (empty($result->data->token)) {
