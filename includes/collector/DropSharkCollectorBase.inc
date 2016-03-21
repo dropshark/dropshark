@@ -77,6 +77,7 @@ abstract class DropSharkCollectorBase implements DropSharkCollector {
     $result['server'] = $this->getServer();
     $result['ds_collector_id'] = "{$result['type']}|{$result['server']}";
     $result['code'] = 'unknown_error';
+    $result['fingerprint'] = dropshark_site_fingerprint();
 
     return $result;
   }
