@@ -227,6 +227,10 @@ function dropshark_dropshark_collector_info() {
     'class' => 'DropSharkDrupalUpdateStatusCollector',
   );
 
+  $collectors['load'] = array(
+    'class' => 'DropSharkLoadCollector',
+  );
+
   $collectors['memcache'] = array(
     'class' => 'DropSharkMemcacheCollector',
   );
