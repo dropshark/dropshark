@@ -91,12 +91,8 @@ function dropshark_get_request() {
  */
 function dropshark_queue_data($data = NULL, $reset = FALSE) {
   static $queue = array();
-  static $registered = FALSE;
 
-  if (!$registered) {
-    drupal_register_shutdown_function('dropshark_finalize_request');
-    $registered = TRUE;
-  }
+  dropshark_set_shutdown_function();
 
   if ($reset) {
     $queue = array();
@@ -123,12 +119,8 @@ function dropshark_queue_data($data = NULL, $reset = FALSE) {
  */
 function dropshark_queue_processing($collector = NULL, $reset = FALSE) {
   static $queue = array();
-  static $registered = FALSE;
 
-  if (!$registered) {
-    drupal_register_shutdown_function('dropshark_finalize_request');
-    $registered = TRUE;
-  }
+  dropshark_set_shutdown_function();
 
   if ($reset) {
     $queue = array();
@@ -139,6 +131,18 @@ function dropshark_queue_processing($collector = NULL, $reset = FALSE) {
   }
 
   return $queue;
+}
+
+/**
+ * Registers dropshark_finalize_request() as a shutdown function.
+ */
+function dropshark_set_shutdown_function() {
+  static $registered = FALSE;
+
+  if (!$registered) {
+    drupal_register_shutdown_function('dropshark_finalize_request');
+    $registered = TRUE;
+  }
 }
 
 /**
