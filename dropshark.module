@@ -251,6 +251,10 @@ function dropshark_dropshark_collector_info() {
     'class' => 'DropSharkSwapCollector',
   );
 
+  $collectors['user_sessions'] = array(
+    'class' => 'DropSharkUserSessionCollector',
+  );
+
   return $collectors;
 }
 
@@ -352,4 +356,19 @@ function dropshark_site_fingerprint() {
   }
 
   return $fingerprint;
+}
+
+
+/**
+ * Implements hook_user_login().
+ */
+function dropshark_user_login(&$edit, $account) {
+  dropshark_handle_event('user_login', $account);
+}
+
+/**
+ * Implements hook_user_logout().
+ */
+function dropshark_user_logout($account) {
+  dropshark_handle_event('user_logout', $account);
 }
