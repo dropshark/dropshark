@@ -19,6 +19,7 @@ class DropSharkUserPassResetCollector extends DropSharkCollectorBase {
     $data['account'] = $account;
     $data['code'] = 0;
     $data['log'] = TRUE;
+    dropshark_queue_data($data);
 
     return DropSharkCollector::RESPONSE_COMPLETE;
   }
