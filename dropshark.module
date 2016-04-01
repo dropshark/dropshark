@@ -255,6 +255,10 @@ function dropshark_dropshark_collector_info() {
     'class' => 'DropSharkUserCollector',
   );
 
+  $collectors['user_pass_reset'] = array(
+    'class' => 'DropSharkUserPassResetCollector',
+  );
+
   $collectors['user_sessions'] = array(
     'class' => 'DropSharkUserSessionCollector',
   );
@@ -404,4 +408,21 @@ function dropshark_user_cancel($edit, $account, $method) {
   $data['account'] = $account;
   $data['method'] = $method;
   dropshark_handle_event('user_cancel', $data);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function dropshark_form_user_pass_alter(&$form) {
+  if (!in_array('dropshark_user_pass_reset', $form['#submit'])) {
+    $form['#submit'][] = 'dropshark_user_pass_reset';
+  }
+}
+
+/**
+ * Submit callback for user_pass form.
+ */
+function dropshark_user_pass_reset($form, $form_state) {
+  $account = $form_state['values']['account'];
+  dropshark_handle_event('user_pass_reset', $account);
 }
