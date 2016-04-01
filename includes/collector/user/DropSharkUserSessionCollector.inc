@@ -10,10 +10,16 @@ class DropSharkUserSessionCollector extends DropSharkCollectorBase {
   /**
    * {@inheritdoc}
    */
-  public function collect($event, $data = array()) {
+  public function collect($event, $account = array()) {
     if (!$this->respond($event)) {
       return DropSharkCollector::RESPONSE_NONE;
     }
+
+    $data = $this->defaultResult($event);
+    $data['account'] = $account;
+    $data['code'] = 0;
+    $data['log'] = TRUE;
+    dropshark_queue_data($data);
 
     return DropSharkCollector::RESPONSE_DEFERRED;
   }
