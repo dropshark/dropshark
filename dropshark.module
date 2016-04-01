@@ -243,6 +243,10 @@ function dropshark_dropshark_collector_info() {
     'class' => 'DropSharkMemoryCollector',
   );
 
+  $collectors['node'] = array(
+    'class' => 'DropSharkNodeCollector',
+  );
+
   $collectors['opcache'] = array(
     'class' => 'DropSharkPhpOpcacheCollector',
   );
@@ -364,6 +368,27 @@ function dropshark_site_fingerprint() {
   }
 
   return $fingerprint;
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function dropshark_node_insert($node) {
+  dropshark_handle_event('node_insert', $node);
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function dropshark_node_update($node) {
+  dropshark_handle_event('node_update', $node);
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function dropshark_node_delete($node) {
+  dropshark_handle_event('node_delete', $node);
 }
 
 /**
