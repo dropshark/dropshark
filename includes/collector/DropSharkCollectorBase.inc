@@ -66,14 +66,22 @@ abstract class DropSharkCollectorBase implements DropSharkCollector {
    * This contains the properties needed to report a valid result. Collectors
    * will add and overwrite properties as needed.
    *
-   * Note: 'ds_timestamp' property gets added when the collected data is queued.
+   * Note: 'ds_timestamp' and 'ds_fingerprint' properties gets added when the
+   * collected data is queued.
+   *
+   * @param string $type
+   *   The type indicator of the data being collected.
    *
    * @return array
    */
-  protected function defaultResult() {
+  protected function defaultResult($type = NULL) {
     $result = array();
 
-    $result['type'] = $this->type;
+    if (!$type) {
+      $type = $this->type;
+    }
+
+    $result['type'] = $type;
     $result['server'] = $this->getServer();
     $result['ds_collector_id'] = "{$result['type']}|{$result['server']}";
     $result['code'] = 'unknown_error';
