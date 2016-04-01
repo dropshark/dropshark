@@ -16,6 +16,7 @@ files[] = includes/collector/system/DropSharkLinfoCollector.inc
 files[] = includes/collector/system/DropSharkLoadCollector.inc
 files[] = includes/collector/system/DropSharkMemoryCollector.inc
 files[] = includes/collector/system/DropSharkSwapCollector.inc
+files[] = includes/collector/user/DropSharkUserCollector.inc
 files[] = includes/collector/user/DropSharkUserSessionCollector.inc
 
 files[] = includes/queue/DropSharkQueue.inc

@@ -251,6 +251,10 @@ function dropshark_dropshark_collector_info() {
     'class' => 'DropSharkSwapCollector',
   );
 
+  $collectors['user'] = array(
+    'class' => 'DropSharkUserCollector',
+  );
+
   $collectors['user_sessions'] = array(
     'class' => 'DropSharkUserSessionCollector',
   );
@@ -358,7 +362,6 @@ function dropshark_site_fingerprint() {
   return $fingerprint;
 }
 
-
 /**
  * Implements hook_user_login().
  */
@@ -371,4 +374,34 @@ function dropshark_user_login(&$edit, $account) {
  */
 function dropshark_user_logout($account) {
   dropshark_handle_event('user_logout', $account);
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function dropshark_user_insert(&$edit, $account, $category) {
+  $data['edit'] = $edit;
+  $data['account'] = $account;
+  $data['category'] = $category;
+  dropshark_handle_event('user_insert', $data);
+}
+
+/**
+ * Implements hook_user_update().
+ */
+function dropshark_user_update(&$edit, $account, $category) {
+  $data['edit'] = $edit;
+  $data['account'] = $account;
+  $data['category'] = $category;
+  dropshark_handle_event('user_update', $data);
+}
+
+/**
+ * Implements hook_user_cancel().
+ */
+function dropshark_user_cancel($edit, $account, $method) {
+  $data['edit'] = $edit;
+  $data['account'] = $account;
+  $data['method'] = $method;
+  dropshark_handle_event('user_cancel', $data);
 }
