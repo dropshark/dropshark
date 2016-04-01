@@ -15,7 +15,10 @@ class DropSharkUserCollector extends DropSharkCollectorBase {
       return DropSharkCollector::RESPONSE_NONE;
     }
 
-    // Logging will go here.
+    $data = array_merge($data, $this->defaultResult($event));
+    $data['code'] = 0;
+    $data['log'] = TRUE;
+    dropshark_queue_data($data);
 
     return DropSharkCollector::RESPONSE_DEFERRED;
   }
