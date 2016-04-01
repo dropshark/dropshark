@@ -22,6 +22,7 @@ class DropSharkUserSessionCollector extends DropSharkCollectorBase {
    * {@inheritdoc}
    */
   public function finalize() {
+    $data = $this->defaultResult();
     $data['code'] = 0;
     $data['count'] = $this->getCount();
     dropshark_queue_data($data);
