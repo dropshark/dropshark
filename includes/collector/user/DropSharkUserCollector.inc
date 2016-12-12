@@ -12,15 +12,14 @@ class DropSharkUserCollector extends DropSharkCollectorBase {
    */
   public function collect($event, $data = array()) {
     if (!$this->respond($event)) {
-      return DropSharkCollector::RESPONSE_NONE;
+      return;
     }
 
     $data = array_merge($data, $this->defaultResult($event));
-    $data['code'] = 0;
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
     $data['log'] = TRUE;
-    dropshark_queue_data($data);
-
-    return DropSharkCollector::RESPONSE_DEFERRED;
+    $this->queue->add($data);
+    $this->queue->setDeferred($this);
   }
 
   /**
@@ -45,8 +44,8 @@ class DropSharkUserCollector extends DropSharkCollectorBase {
       WHERE u.status = ?
       GROUP BY r.rid";
     $data['users_roles'] = db_query($query, array(1))->fetchAllKeyed(1, 0);
-    $data['code'] = 0;
-    dropshark_queue_data($data);
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
+    $this->queue->add($data);
   }
 
   /**
@@ -57,8 +56,8 @@ class DropSharkUserCollector extends DropSharkCollectorBase {
     $query = "SELECT COUNT(*) AS c, u.status FROM {users} AS u 
       WHERE u.uid > ? GROUP BY u.status";
     $data['users_status'] = db_query($query, array(0))->fetchAllKeyed(1, 0);
-    $data['code'] = 0;
-    dropshark_queue_data($data);
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
+    $this->queue->add($data);
   }
 
   /**
@@ -97,8 +96,8 @@ class DropSharkUserCollector extends DropSharkCollectorBase {
       $data['users_age_over'][$val] = $data['total'] - $data['users_age_under'][$val];
     }
 
-    $data['code'] = 0;
-    dropshark_queue_data($data);
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
+    $this->queue->add($data);
   }
 
   /**
@@ -109,8 +108,8 @@ class DropSharkUserCollector extends DropSharkCollectorBase {
     $query = "SELECT COUNT(*) AS c FROM {users} AS u
       WHERE u.uid > ? AND u.access = ? AND u.status = ?";
     $data['pending'] = db_query($query, array(0, 0, 0))->fetchField();
-    $data['code'] = 0;
-    dropshark_queue_data($data);
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
+    $this->queue->add($data);
   }
 
   /**
@@ -121,8 +120,8 @@ class DropSharkUserCollector extends DropSharkCollectorBase {
     $query = "SELECT COUNT(*) AS c FROM {users} AS u
       WHERE u.uid > ? AND u.access = ? AND u.status = ?";
     $data['never_logged_in'] = db_query($query, array(0, 0, 1))->fetchField();
-    $data['code'] = 0;
-    dropshark_queue_data($data);
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
+    $this->queue->add($data);
   }
 
 }

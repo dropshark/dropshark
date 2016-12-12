@@ -12,16 +12,15 @@ class DropSharkUserSessionCollector extends DropSharkCollectorBase {
    */
   public function collect($event, $account = array()) {
     if (!$this->respond($event)) {
-      return DropSharkCollector::RESPONSE_NONE;
+      return;
     }
 
     $data = $this->defaultResult($event);
     $data['account'] = $account;
-    $data['code'] = 0;
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
     $data['log'] = TRUE;
-    dropshark_queue_data($data);
-
-    return DropSharkCollector::RESPONSE_DEFERRED;
+    $this->queue->add($data);
+    $this->queue->setDeferred($this);
   }
 
   /**
@@ -29,9 +28,9 @@ class DropSharkUserSessionCollector extends DropSharkCollectorBase {
    */
   public function finalize() {
     $data = $this->defaultResult();
-    $data['code'] = 0;
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
     $data['count'] = $this->getCount();
-    dropshark_queue_data($data);
+    $this->queue->add($data);
   }
 
   /**

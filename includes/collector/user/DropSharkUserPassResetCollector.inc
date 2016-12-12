@@ -12,16 +12,14 @@ class DropSharkUserPassResetCollector extends DropSharkCollectorBase {
    */
   public function collect($event, $account = array()) {
     if (!$this->respond($event)) {
-      return DropSharkCollector::RESPONSE_NONE;
+      return;
     }
 
     $data = $this->defaultResult();
     $data['account'] = $account;
-    $data['code'] = 0;
+    $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
     $data['log'] = TRUE;
-    dropshark_queue_data($data);
-
-    return DropSharkCollector::RESPONSE_COMPLETE;
+    $this->queue->add($data);
   }
 
 }

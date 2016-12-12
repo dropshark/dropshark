@@ -3,17 +3,47 @@
 /**
  * Class DropSharkCollectorBase.
  */
-abstract class DropSharkCollectorBase implements DropSharkCollector {
+abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
 
+  /**
+   * An array of information from the collector's definition.
+   *
+   * @var array
+   */
   protected $definition;
+
+  /**
+   * Event types which the collector will respond.
+   *
+   * @var array
+   */
   protected $events = array();
+
+  /**
+   * The queue for handling collected data.
+   *
+   * @var \DropSharkQueueInterface
+   */
+  protected $queue;
+
+  /**
+   * A machine name indicating the collector's type.
+   *
+   * @var string|null
+   */
   protected $type = NULL;
 
   /**
-   * {@inheritdoc}
+   * DropSharkCollector constructor.
+   *
+   * @param array $definition
+   *   Collector definition obtained from hook_dropshark_collector_info().
+   * @param \DropSharkQueueInterface $queue
+   *   The queue used for handling collected data.
    */
-  public function __construct($definition) {
+  public function __construct($definition, DropSharkQueueInterface $queue) {
     $this->definition = $definition;
+    $this->queue = $queue;
   }
 
   /**
