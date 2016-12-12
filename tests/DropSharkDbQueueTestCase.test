@@ -5,6 +5,11 @@
  */
 class DropSharkQueueTestCase extends DrupalWebTestCase {
 
+  /**
+   * Defines test information.
+   *
+   * @return array
+   */
   public static function getInfo() {
     return array(
       'name' => 'DropShark data queue',
