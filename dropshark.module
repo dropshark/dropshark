@@ -9,7 +9,7 @@ define('DROPSHARK_HOST_DEFAULT', 'https://data.dropshark.io');
 define('DROPSHARK_QUEUE_DEFAULT', 'DropSharkDbQueue');
 define('DROPSHARK_QUEUE_LOCK_MAX_DEFAULT', 300);
 define('DROPSHARK_QUEUE_MAX_PROCESS_DEFAULT', 100);
-define('DROPSHARK_REQUEST_DEFAULT', 'DropSharkRequestDefault');
+define('DROPSHARK_REQUEST_DEFAULT', 'DropSharkRequest');
 define('DROPSHARK_LINFO_AUTOLOADER', 'sites/all/libraries/linfo/standalone_autoload.php');
 
 /**
@@ -61,15 +61,17 @@ function dropshark_get_queue() {
 /**
  * Gets the configured DropShark request handling class.
  *
- * @return DropSharkRequest
- *   The request handler configured for use.
+ * @return \DropSharkRequestInterface
+ *   The request handling class configured for use.
  */
 function dropshark_get_request() {
   $request = &drupal_static(__FUNCTION__);
 
   if (!$request) {
     $class = variable_get('dropshark_request_class', DROPSHARK_REQUEST_DEFAULT);
-    $request = new $class();
+    $host = variable_get('dropshark_host', DROPSHARK_HOST_DEFAULT);
+    $token = variable_get('dropshark_site_token');
+    $request = new $class($host, $token);
   }
 
   return $request;

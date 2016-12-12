@@ -16,8 +16,6 @@ class DropSharkQueueTestCase extends DrupalWebTestCase {
   function setUp() {
     $modules = array('dropshark');
     parent::setUp($modules);
-    variable_set('dropshark_request_class', 'DropSharkRequestTest');
-    variable_set('dropshark_site_token', 'valid_token');
   }
 
   function testQueueLock() {

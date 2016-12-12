@@ -17,7 +17,7 @@ class DropSharkAdminTestCase extends DrupalWebTestCase {
 
   function setUp() {
     parent::setUp('dropshark');
-    variable_set('dropshark_request_class', 'DropSharkRequestTest');
+    variable_set('dropshark_request_class', 'DropSharkWebTestRequest');
     $this->adminUser = $this->drupalCreateUser(array('administer site configuration'));
   }
 
