@@ -4,7 +4,7 @@ core = 7.x
 php = 5.2
 configure = admin/config/services/dropshark
 
-files[] = includes/collector/DropSharkCollector.inc
+files[] = includes/collector/DropSharkCollectorInterface.inc
 files[] = includes/collector/DropSharkCollectorBase.inc
 files[] = includes/collector/drupal/DropSharkDrupalStatusCollector.inc
 files[] = includes/collector/drupal/DropSharkDrupalUpdateStatusCollector.inc
@@ -21,11 +21,12 @@ files[] = includes/collector/user/DropSharkUserCollector.inc
 files[] = includes/collector/user/DropSharkUserPassResetCollector.inc
 files[] = includes/collector/user/DropSharkUserSessionCollector.inc
 
-files[] = includes/queue/DropSharkQueue.inc
+files[] = includes/queue/DropSharkQueueInterface.inc
 files[] = includes/queue/DropSharkDbQueue.inc
+files[] = includes/request/DropSharkRequestInterface.inc
 files[] = includes/request/DropSharkRequest.inc
-files[] = includes/request/DropSharkRequestDefault.inc
-files[] = includes/request/DropSharkRequestTest.inc
+files[] = includes/request/DropSharkUnitTestRequest.inc
+files[] = includes/request/DropSharkWebTestRequest.inc
 
 files[] = tests/DropSharkAdminTestCase.test
 files[] = tests/DropSharkDbQueueTestCase.test
