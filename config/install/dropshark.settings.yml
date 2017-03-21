@@ -1,6 +1,8 @@
-site_id: NULL
-host: 'https://data.dropshark.io'
-cron: true
-queue:
-  - lock_max: 300
-  - max_process: 100
+dropshark.settings:
+  site_id: NULL
+  site_token: NULL
+  host: 'https://data.dropshark.io'
+  cron: true
+  queue:
+    - lock_max: 300
+    - max_process: 100
