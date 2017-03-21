@@ -1,0 +1,10 @@
+services:
+  dropshark.fingerprint:
+    class: Drupal\dropshark\Fingerprint\FingerprintDefault
+  dropshark.queue:
+    class: Drupal\dropshark\Queue\DbQueue
+    arguments: ['@http_client']
+  plugin.manager.dropshark_collector:
+    class: Drupal\dropshark\Collector\CollectorManager
+    parent: default_plugin_manager
+    arguments: ['@dropshark.queue', '@dropshark.fingerprint']
