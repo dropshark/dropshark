@@ -12,31 +12,31 @@ define('DROPSHARK_QUEUE_MAX_PROCESS_DEFAULT', 100);
 define('DROPSHARK_REQUEST_DEFAULT', 'DropSharkRequest');
 define('DROPSHARK_LINFO_AUTOLOADER', 'sites/all/libraries/linfo/standalone_autoload.php');
 
-/**
- * Implements hook_menu().
- */
-function dropshark_menu() {
-  $items['admin/config/services/dropshark'] = array(
-    'type' => MENU_NORMAL_ITEM,
-    'title' => 'DropShark',
-    'description' => 'Configure your site to utilize the DropShark monitoring, trending, and alerts service.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('dropshark_admin_config'),
-    'access arguments' => array('administer site configuration'),
-    'file' => 'dropshark.admin.inc',
-  );
-
-  $items['dropshark/collect'] = array(
-    'type' => MENU_CALLBACK,
-    'title' => 'DropShark',
-    'description' => 'Endpoint to trigger data collection.',
-    'page callback' => 'dropshark_collect_page',
-    'access callback' => TRUE,
-    'file' => 'dropshark.pages.inc',
-  );
-
-  return $items;
-}
+///**
+// * Implements hook_menu().
+// */
+//function dropshark_menu() {
+//  $items['admin/config/services/dropshark'] = array(
+//    'type' => MENU_NORMAL_ITEM,
+//    'title' => 'DropShark',
+//    'description' => 'Configure your site to utilize the DropShark monitoring, trending, and alerts service.',
+//    'page callback' => 'drupal_get_form',
+//    'page arguments' => array('dropshark_admin_config'),
+//    'access arguments' => array('administer site configuration'),
+//    'file' => 'dropshark.admin.inc',
+//  );
+//
+//  $items['dropshark/collect'] = array(
+//    'type' => MENU_CALLBACK,
+//    'title' => 'DropShark',
+//    'description' => 'Endpoint to trigger data collection.',
+//    'page callback' => 'dropshark_collect_page',
+//    'access callback' => TRUE,
+//    'file' => 'dropshark.pages.inc',
+//  );
+//
+//  return $items;
+//}
 
 /**
  * Gets the configured DropShark queue processing class.
