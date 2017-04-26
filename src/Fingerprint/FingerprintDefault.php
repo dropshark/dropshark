@@ -42,7 +42,7 @@ class FingerprintDefault implements FingerprintInterface {
    * {@inheritdoc}
    */
   public function getFingerprint() {
-    //$dir = $_SERVER['HOME'] . '/.dropshark/fingerprints';
+    $dir = $_SERVER['HOME'] . '/.dropshark/fingerprints';
     $dir = $_SERVER['HOME'] . '/ds/fingerprints';
     $file = $dir . '/' . $this->siteId;
 
@@ -63,7 +63,6 @@ class FingerprintDefault implements FingerprintInterface {
       $fingerprint = file_get_contents($file);
     }
 
-    dsm($fingerprint, $file);
     return $fingerprint;
   }
 

@@ -57,8 +57,6 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    dsm($this->fingerprint->getFingerprint(), __METHOD__);
-
     $config = $this->config('dropshark.settings');
 
     if ($config->get('site_token')) {
@@ -68,7 +66,6 @@ class SettingsForm extends ConfigFormBase {
       $form = $this->registrationForm($form);
     }
 
-    $form['#theme'] = 'system_config_form';
     return $form;
   }
 
