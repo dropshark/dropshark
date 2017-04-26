@@ -49,6 +49,7 @@ function dropshark_schema() {
  */
 function dropshark_requirements($phase) {
   $requirements = array();
+  return $requirements;
 
   if ($phase == 'runtime') {
     if (!variable_get('dropshark_site_token')) {

@@ -2,12 +2,14 @@
 
 namespace Drupal\dropshark\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\ClientException;
+use Drupal\dropshark\Fingerprint\FingerprintAwareTrait;
+use Drupal\dropshark\Fingerprint\FingerprintInterface;
+use Drupal\dropshark\Request\RequestInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -15,21 +17,29 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SettingsForm extends ConfigFormBase {
 
+  use FingerprintAwareTrait;
+
   /**
-   * The HTTP client.
+   * Request handler.
    *
-   * @var \GuzzleHttp\ClientInterface
+   * @var \Drupal\dropshark\Request\RequestInterface
    */
-  protected $httpClient;
+  protected $request;
 
   /**
    * Constructs the settings form.
    *
-   * @param \GuzzleHttp\ClientInterface $httpClient
-   *   The Guzzle HTTP client.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   The factory for configuration objects.
+   * @param \Drupal\dropshark\Fingerprint\FingerprintInterface $fingerprint
+   *   The fingerprint service.
+   * @param \Drupal\dropshark\Request\RequestInterface $request
+   *   Request handler.
    */
-  public function __construct(ClientInterface $httpClient) {
-    $this->httpClient = $httpClient;
+  public function __construct(ConfigFactoryInterface $configFactory, FingerprintInterface $fingerprint, RequestInterface $request) {
+    parent::__construct($configFactory);
+    $this->setFingerprint($fingerprint);
+    $this->request = $request;
   }
 
   /**
@@ -37,7 +47,9 @@ class SettingsForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('http_client')
+      $container->get('config.factory'),
+      $container->get('dropshark.fingerprint'),
+      $container->get('dropshark.request')
     );
   }
 
@@ -45,6 +57,8 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    dsm($this->fingerprint->getFingerprint(), __METHOD__);
+
     $config = $this->config('dropshark.settings');
 
     if ($config->get('site_token')) {
@@ -128,23 +142,16 @@ class SettingsForm extends ConfigFormBase {
    * Validation for registration form.
    */
   public function registrationFormValidate(&$element, FormStateInterface $form_state) {
-    $config = $this->config('dropshark.settings');
-    $config->set('host', 'http://local.data.dropshark.io');
-    $config->save();
+    $result = $this->request->getToken(
+      $form_state->getValue('email'),
+      $form_state->getValue('password'),
+      $form_state->getValue('site_id'),
+      ''
+    );
 
-    try {
-      $params['form_params']['user'] = $form_state->getValue('email');
-      $params['form_params']['password'] = $form_state->getValue('password');
-      $response = $this->httpClient->request('post', $config->get('host') . '/sites/token', $params);
-      $result = json_decode((string) $response->getBody());
-    }
-    catch (\Exception $e) {
-      $result = new \stdClass();
-    }
-
-    if (!empty($result->token)) {
+    if (!empty($result->data->token)) {
       drupal_set_message($this->t('Your site has been registered with DropShark.'));
-      $form_state->set('site_token', $result->token);
+      $form_state->set('site_token', $result->data->token);
       $form_state->set('site_id', $form_state->getValue('site_id'));
     }
     else {
@@ -241,7 +248,13 @@ class SettingsForm extends ConfigFormBase {
    * Checks connectivity to DropShark backend.
    */
   public function statusFormCheckSubmit() {
+    $result = $this->request->checkToken();
 
+    if (empty($result->data->site_id)) {
+      drupal_set_message(t('Unable to verify the site connection.'), 'error');
+    } else {
+      drupal_set_message(t('Connection successfully verified.'));
+    }
   }
 
   /**
