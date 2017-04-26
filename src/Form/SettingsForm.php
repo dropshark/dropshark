@@ -17,8 +17,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SettingsForm extends ConfigFormBase {
 
-  use FingerprintAwareTrait;
-
   /**
    * Request handler.
    *
@@ -31,14 +29,11 @@ class SettingsForm extends ConfigFormBase {
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The factory for configuration objects.
-   * @param \Drupal\dropshark\Fingerprint\FingerprintInterface $fingerprint
-   *   The fingerprint service.
    * @param \Drupal\dropshark\Request\RequestInterface $request
    *   Request handler.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, FingerprintInterface $fingerprint, RequestInterface $request) {
+  public function __construct(ConfigFactoryInterface $configFactory, RequestInterface $request) {
     parent::__construct($configFactory);
-    $this->setFingerprint($fingerprint);
     $this->request = $request;
   }
 

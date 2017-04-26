@@ -278,35 +278,3 @@ function dropshark_cron() {
     dropshark_handle_event('all', array(), TRUE);
   }
 }
-
-/**
- * Produces a fingerprint of the site and environment.
- *
- * This is sent along with the data submitted to the DropShark backend and is
- * used to validate that the site is the same site which acquired the token.
- * By rejecting data with an invalid fingerprint, we can ignore data coming from
- * other, likely non-production, environments.
- *
- * @return string
- */
-function dropshark_site_fingerprint() {
-  $fingerprint = &drupal_static(__FUNCTION__);
-
-  if (!$fingerprint) {
-    // Location of Drupal installation.
-    $fingerprint[] = DRUPAL_ROOT . '/' . conf_path();
-
-    if (!empty($_SERVER['SERVER_NAME'])) {
-      $fingerprint[] = $_SERVER['SERVER_NAME'];
-    }
-
-    if (!empty($_SERVER['SERVER_ADDR'])) {
-      $fingerprint[] = $_SERVER['SERVER_ADDR'];
-    }
-
-    $fingerprint = implode('|', $fingerprint);
-    $fingerprint = md5($fingerprint);
-  }
-
-  return $fingerprint;
-}
