@@ -76,11 +76,9 @@ class DropSharkRequest implements RequestInterface {
   /**
    * {@inheritdoc}
    */
-  public function getToken($email, $password, $siteId, $fingerprint) {
-    $options['form_params']['user'] = $email;
-    $options['form_params']['password'] = $password;
-    $options['form_params']['site_id'] = $siteId;
-    $options['form_params']['fingerprint'] = $fingerprint;
+  public function getToken($email, $password, $siteId) {
+    $params = ['user' => $email, 'password' => $password, 'site_id' => $siteId];
+    $options = $this->requestOptions($params);
 
     $result = new \stdClass();
     try {
@@ -96,6 +94,27 @@ class DropSharkRequest implements RequestInterface {
     }
 
     return $result;
+  }
+
+  /**
+   * Prepares an array of options for Guzzle requests.
+   */
+  protected function requestOptions($params, $siteId = NULL) {
+    $options = [];
+
+    if (!empty($params)) {
+      $options['form_params'] = $params;
+    }
+
+    if ($this->token) {
+      $options['headers']['Authorization'] = $this->token;
+    }
+
+    if ($siteId) {
+      $options['headers']['X-DropShark-Site'] = $siteId;
+    }
+
+    return $options;
   }
 
 }

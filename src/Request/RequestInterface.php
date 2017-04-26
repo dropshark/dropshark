@@ -21,13 +21,11 @@ interface RequestInterface {
    *   The user's password.
    * @param string $siteId
    *   The site ID.
-   * @param string $fingerprint
-   *   The environment fingerprint.
    *
    * @return string|null
    *   The token provisioned for the site, or NULL if unable to provision a
    *   token.
    */
-  public function getToken($email, $password, $siteId, $fingerprint);
+  public function getToken($email, $password, $siteId);
 
 }
