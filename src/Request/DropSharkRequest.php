@@ -39,6 +39,8 @@ class DropSharkRequest implements RequestInterface {
    *   Configuration options.
    * @param \GuzzleHttp\ClientInterface $httpClient
    *   HTTP client.
+   * @param \Drupal\dropshark\Fingerprint\FingerprintInterface
+   *   The fingerprint service.
    */
   public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient) {
     $config = $configFactory->get('dropshark.settings');
@@ -98,8 +100,14 @@ class DropSharkRequest implements RequestInterface {
 
   /**
    * Prepares an array of options for Guzzle requests.
+   *
+   * @param array $params
+   *   Request parameters.
+   *
+   * @return array
+   *   Options to use for a Guzzle request.
    */
-  protected function requestOptions($params, $siteId = NULL) {
+  protected function requestOptions($params) {
     $options = [];
 
     if (!empty($params)) {
@@ -108,10 +116,6 @@ class DropSharkRequest implements RequestInterface {
 
     if ($this->token) {
       $options['headers']['Authorization'] = $this->token;
-    }
-
-    if ($siteId) {
-      $options['headers']['X-DropShark-Site'] = $siteId;
     }
 
     return $options;
