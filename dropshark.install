@@ -49,18 +49,20 @@ function dropshark_schema() {
  */
 function dropshark_requirements($phase) {
   $requirements = array();
-  return $requirements;
+
+  $config = \Drupal::config('dropshark');
 
   if ($phase == 'runtime') {
-    if (!variable_get('dropshark_site_token')) {
+    if ($config->get('site_token')) {
       $link = l(t('register'), 'admin/config/services/dropshark');
       $requirements['dropshark_register']['title'] = t('DropShark registration');
       $requirements['dropshark_register']['value'] = t('Not registered');
       $requirements['dropshark_register']['severity'] = REQUIREMENT_ERROR;
       $requirements['dropshark_register']['description'] = t('Information collected from your site cannot be submitted to DropShark. Please !link your site to utilize DropShark.', array('!link' => $link));
     } else {
-      $r = dropshark_get_request();
-      $result = $r->get('sites/token');
+      /** @var \Drupal\dropshark\Request\DropSharkRequest $r */
+      $r = \Drupal::getContainer()->get('dropshark.request');
+      $result = $r->checkToken();
 
       if (empty($result->data->site_id)) {
         $link = l(t('configuration'), 'admin/config/services/dropshark');
