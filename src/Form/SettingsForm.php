@@ -43,7 +43,6 @@ class SettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('dropshark.fingerprint'),
       $container->get('dropshark.request')
     );
   }
