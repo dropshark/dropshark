@@ -45,20 +45,20 @@ class DropSharkDbQueue implements DropSharkQueueInterface {
    *
    * @var string
    */
-  protected $site_id;
+  protected $siteId;
 
   /**
    * {@inheritdoc}
    */
-  public function __construct($request, $site_id) {
+  public function __construct(DropSharkRequestInterface $request, $siteId) {
     $this->request = $request;
-    $this->site_id = $site_id;
+    $this->siteId = $siteId;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function add($item) {
+  public function add(array $item) {
     $item['ds_timestamp'] = time();
     $data['data'] = $item;
     $data['created'] = $this->timestamp();
@@ -68,7 +68,7 @@ class DropSharkDbQueue implements DropSharkQueueInterface {
   /**
    * Clear expired locks from queue items.
    *
-   * @param $timestamp
+   * @param int $timestamp
    *   The timestamp for which to check lock expiration, defaults to current
    *   time minus the lock expiration configuration.
    */
@@ -84,6 +84,7 @@ class DropSharkDbQueue implements DropSharkQueueInterface {
    * Gets items from persistent storage.
    *
    * @return array
+   *   Items loaded from persistent storage.
    */
   protected function getItems() {
     // Lock the next X items.
@@ -173,7 +174,7 @@ class DropSharkDbQueue implements DropSharkQueueInterface {
   /**
    * {@inheritdoc}
    */
-  public function setDeferred($collector) {
+  public function setDeferred(DropSharkCollectorInterface $collector) {
     $this->deferred[] = $collector;
   }
 
@@ -231,12 +232,12 @@ class DropSharkDbQueue implements DropSharkQueueInterface {
    * @param array $items
    *   Data to be transmitted.
    *
-   * @return stdClass
+   * @return object
    *   Result of drupal_http_request() from the data submission.
    */
-  protected function transmitItems($items) {
+  protected function transmitItems(array $items) {
     $params['data'] = json_encode($items);
-    $params['site_id'] = $this->site_id;
+    $params['site_id'] = $this->siteId;
     return $this->request->post('data', $params);
   }
 
