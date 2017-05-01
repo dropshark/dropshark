@@ -69,7 +69,8 @@ function dropshark_requirements($phase) {
       $requirements['dropshark_register']['value'] = t('Not registered');
       $requirements['dropshark_register']['severity'] = REQUIREMENT_ERROR;
       $requirements['dropshark_register']['description'] = t('Information collected from your site cannot be submitted to DropShark. Please !link your site to utilize DropShark.', array('!link' => $link));
-    } else {
+    }
+    else {
       $r = dropshark_get_request();
       $result = $r->get('sites/token');
 
@@ -79,7 +80,8 @@ function dropshark_requirements($phase) {
         $requirements['dropshark_connection']['value'] = t('Unable to connect');
         $requirements['dropshark_connection']['severity'] = REQUIREMENT_ERROR;
         $requirements['dropshark_connection']['description'] = t('Information collected from your site cannot be submitted to DropShark. Please check your DropShark !link.', array('!link' => $link));
-      } else {
+      }
+      else {
         $requirements['dropshark']['title'] = t('DropShark');
         $requirements['dropshark']['value'] = t('OK');
         $requirements['dropshark']['severity'] = REQUIREMENT_OK;
@@ -90,7 +92,8 @@ function dropshark_requirements($phase) {
     if ($linfo = dropshark_get_linfo()) {
       $requirements['dropshark_linfo']['value'] = t('Installed: %version', array('%version' => $linfo->getVersion()));
       $requirements['dropshark_linfo']['severity'] = REQUIREMENT_OK;
-    } else {
+    }
+    else {
       $requirements['dropshark_linfo']['value'] = t('Not found');
       $requirements['dropshark_linfo']['severity'] = REQUIREMENT_WARNING;
       $requirements['dropshark_linfo']['description'] = t('The DropShark module needs the Linfo library in order to collect system data.');
