@@ -181,28 +181,12 @@ function dropshark_dropshark_collector_info() {
     'class' => 'DropSharkMemoryCollector',
   );
 
-  $collectors['node'] = array(
-    'class' => 'DropSharkNodeCollector',
-  );
-
   $collectors['opcache'] = array(
     'class' => 'DropSharkPhpOpcacheCollector',
   );
 
   $collectors['swap'] = array(
     'class' => 'DropSharkSwapCollector',
-  );
-
-  $collectors['user'] = array(
-    'class' => 'DropSharkUserCollector',
-  );
-
-  $collectors['user_pass_reset'] = array(
-    'class' => 'DropSharkUserPassResetCollector',
-  );
-
-  $collectors['user_sessions'] = array(
-    'class' => 'DropSharkUserSessionCollector',
   );
 
   return $collectors;
@@ -309,86 +293,4 @@ function dropshark_site_fingerprint() {
   }
 
   return $fingerprint;
-}
-
-/**
- * Implements hook_node_insert().
- */
-function dropshark_node_insert($node) {
-  dropshark_handle_event('node_insert', $node);
-}
-
-/**
- * Implements hook_node_update().
- */
-function dropshark_node_update($node) {
-  dropshark_handle_event('node_update', $node);
-}
-
-/**
- * Implements hook_node_delete().
- */
-function dropshark_node_delete($node) {
-  dropshark_handle_event('node_delete', $node);
-}
-
-/**
- * Implements hook_user_login().
- */
-function dropshark_user_login(&$edit, $account) {
-  dropshark_handle_event('user_login', $account);
-}
-
-/**
- * Implements hook_user_logout().
- */
-function dropshark_user_logout($account) {
-  dropshark_handle_event('user_logout', $account);
-}
-
-/**
- * Implements hook_user_insert().
- */
-function dropshark_user_insert(&$edit, $account, $category) {
-  $data['edit'] = $edit;
-  $data['account'] = $account;
-  $data['category'] = $category;
-  dropshark_handle_event('user_insert', $data);
-}
-
-/**
- * Implements hook_user_update().
- */
-function dropshark_user_update(&$edit, $account, $category) {
-  $data['edit'] = $edit;
-  $data['account'] = $account;
-  $data['category'] = $category;
-  dropshark_handle_event('user_update', $data);
-}
-
-/**
- * Implements hook_user_cancel().
- */
-function dropshark_user_cancel($edit, $account, $method) {
-  $data['edit'] = $edit;
-  $data['account'] = $account;
-  $data['method'] = $method;
-  dropshark_handle_event('user_cancel', $data);
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function dropshark_form_user_pass_alter(&$form) {
-  if (!in_array('dropshark_user_pass_reset', $form['#submit'])) {
-    $form['#submit'][] = 'dropshark_user_pass_reset';
-  }
-}
-
-/**
- * Submit callback for user_pass form.
- */
-function dropshark_user_pass_reset($form, $form_state) {
-  $account = $form_state['values']['account'];
-  dropshark_handle_event('user_pass_reset', $account);
 }
