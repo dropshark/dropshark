@@ -16,25 +16,27 @@ interface DropSharkRequestInterface {
   /**
    * Get data from DropShark.
    *
-   * @param $endpoint
+   * @param string $endpoint
    *   The endpoint to get data.
    * @param array $data
    *   Data to be sent in the request.
    *
-   * @return stdClass
+   * @return object
+   *   The response for the request, see `drupal_http_request`.
    */
-  public function get($endpoint, $data = array());
+  public function get($endpoint, array $data = array());
 
   /**
    * Post data to DropShark.
    *
-   * @param $endpoint
+   * @param string $endpoint
    *   The endpoint to post data.
    * @param array $data
    *   Data to be sent in the request.
    *
-   * @return stdClass
+   * @return object
+   *   The response for the request, see `drupal_http_request`.
    */
-  public function post($endpoint, $data = array());
+  public function post($endpoint, array $data = array());
 
 }
