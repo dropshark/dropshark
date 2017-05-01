@@ -33,6 +33,7 @@ function dropshark_menu() {
     'title' => 'DropShark',
     'description' => 'Endpoint to trigger data collection.',
     'page callback' => 'dropshark_collect_page',
+    // Access control/DoS prevention is enforced in page callback.
     'access callback' => TRUE,
     'file' => 'dropshark.pages.inc',
   );

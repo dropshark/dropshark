@@ -10,7 +10,7 @@
  */
 function dropshark_admin_config($form, &$form_state) {
 
-  if (!$token = variable_get('dropshark_site_token')) {
+  if (!variable_get('dropshark_site_token')) {
     $form['instructions']['#markup'] = t("In order to register your site with the DropShark service, you'll need to enter your credentials and site identifier.");
     $form['instructions']['#prefix'] = '<p>';
     $form['instructions']['#suffix'] = '</p>';
