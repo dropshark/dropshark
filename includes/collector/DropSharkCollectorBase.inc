@@ -41,7 +41,7 @@ abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
    * @param \DropSharkQueueInterface $queue
    *   The queue used for handling collected data.
    */
-  public function __construct($definition, DropSharkQueueInterface $queue) {
+  public function __construct(array $definition, DropSharkQueueInterface $queue) {
     $this->definition = $definition;
     $this->queue = $queue;
   }
@@ -65,7 +65,7 @@ abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
    * Alternatively, an extending collector may override this method to perform
    * more sophisticated logic or elect to not use this check.
    *
-   * @param $event
+   * @param string $event
    *   The event or type of event for which the collector is being polled.
    *
    * @return bool
@@ -84,6 +84,7 @@ abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
    * from.
    *
    * @return string
+   *   The server identifier.
    */
   public function getServer() {
     // TODO: make this dynamic, configurable.
@@ -103,6 +104,7 @@ abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
    *   The type indicator of the data being collected.
    *
    * @return array
+   *   A generic result array.
    */
   protected function defaultResult($type = NULL) {
     $result = array();
