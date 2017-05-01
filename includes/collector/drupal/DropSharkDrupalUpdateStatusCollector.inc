@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class DropSharkDrupalUpdateStatusCollector.
+ *
+ * Collects updates status for Drupal core and contrib projects.
+ */
 class DropSharkDrupalUpdateStatusCollector extends DropSharkCollectorBase {
 
   protected $events = array('drupal');
@@ -8,7 +13,7 @@ class DropSharkDrupalUpdateStatusCollector extends DropSharkCollectorBase {
   /**
    * {@inheritdoc}
    */
-  public function collect($event, $data = array()) {
+  public function collect($event, array $data = array()) {
 
     if (!$this->respond($event)) {
       return;

@@ -2,13 +2,18 @@
 
 /**
  * Class DropSharkPhpApcCollector.
+ *
+ * Collects data pertaining to APC usage.
  */
 class DropSharkPhpApcCollector extends DropSharkCollectorBase {
 
   protected $events = array('system');
   protected $type = 'apc';
 
-  public function collect($event, $data = array()) {
+  /**
+   * {@inheritdoc}
+   */
+  public function collect($event, array $data = array()) {
     if (!$this->respond($event)) {
       return;
     }
