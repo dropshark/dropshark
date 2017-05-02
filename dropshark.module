@@ -6,10 +6,10 @@
  */
 
 define('DROPSHARK_HOST_DEFAULT', 'https://data.dropshark.io');
-define('DROPSHARK_QUEUE_DEFAULT', 'DropSharkDbQueue');
+define('DROPSHARK_QUEUE_DEFAULT', '\Drupal\dropshark\Queue\DbQueue');
 define('DROPSHARK_QUEUE_LOCK_MAX_DEFAULT', 300);
 define('DROPSHARK_QUEUE_MAX_PROCESS_DEFAULT', 100);
-define('DROPSHARK_REQUEST_DEFAULT', 'DropSharkRequest');
+define('DROPSHARK_REQUEST_DEFAULT', '\Drupal\dropshark\Request\Request');
 define('DROPSHARK_LINFO_AUTOLOADER', 'libraries/linfo/standalone_autoload.php');
 
 /**
@@ -44,39 +44,6 @@ function dropshark_finalize_request() {
 
   // Persistently store remaining items.
   $queue->persist();
-}
-
-/**
- * Instantiate the Linfo library.
- *
- * @return \Linfo\Linfo|false
- *   The Linfo library, or FALSE if not present.
- */
-function dropshark_get_linfo() {
-  // @TODO: refactor/eliminate?
-  $linfo = &drupal_static(__FUNCTION__, NULL);
-
-  if ($linfo === NULL) {
-    // @todo: dynamic settings handling.
-    $settings['show']['mounts_options'] = FALSE;
-
-    // If not available via Composer, attempt to use the built-in autoloader.
-    if (!class_exists('\Linfo\Linfo')) {
-      $file = DROPSHARK_LINFO_AUTOLOADER;
-      if (file_exists(DROPSHARK_LINFO_AUTOLOADER)) {
-        include $file;
-      }
-    }
-
-    // If it's still not there, then we can't do anything.
-    if (!class_exists('\Linfo\Linfo')) {
-      return $linfo = FALSE;
-    }
-
-    $linfo = new \Linfo\Linfo($settings);
-  }
-
-  return $linfo;
 }
 
 /**
