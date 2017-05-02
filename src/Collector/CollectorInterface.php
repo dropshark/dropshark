@@ -25,4 +25,9 @@ interface CollectorInterface extends FingerprintAwareInterface, QueueAwareInterf
    */
   public function collect($data = array());
 
+  /**
+   * Perform checks which were deferred until the end of the request.
+   */
+  public function finalize();
+
 }

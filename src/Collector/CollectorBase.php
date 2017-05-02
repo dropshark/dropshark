@@ -53,6 +53,13 @@ abstract class CollectorBase extends PluginBase implements CollectorInterface {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function finalize() {
+    // No op.
+  }
+
+  /**
    * The server where the data is being collected.
    *
    * Metrics specific to a server should specify which server they're collected
