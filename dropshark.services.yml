@@ -4,9 +4,9 @@ services:
     arguments: ['@config.factory', '@kernel']
   dropshark.queue:
     class: Drupal\dropshark\Queue\DbQueue
-    arguments: ['@dropshark.request']
+    arguments: ['@database', '@dropshark.request', '@config.factory']
   dropshark.request:
-    class: Drupal\dropshark\Request\DropSharkRequest
+    class: Drupal\dropshark\Request\Request
     arguments: ['@config.factory', '@http_client']
   plugin.manager.dropshark_collector:
     class: Drupal\dropshark\Collector\CollectorManager
