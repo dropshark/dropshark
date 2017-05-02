@@ -26,7 +26,7 @@ class DropSharkPhpApcCollector extends DropSharkCollectorBase {
       return;
     }
 
-    if (!$info = apc_cache_info('', TRUE)) {
+    if (!$info = @apc_cache_info('', TRUE)) {
       $data['code'] = 'apc_not_enabled';
       $this->queue->add($data);
       return;
