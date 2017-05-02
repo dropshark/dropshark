@@ -28,4 +28,9 @@ interface RequestInterface {
    */
   public function getToken($email, $password, $siteId);
 
+  /**
+   * @return object
+   */
+  public function postData($data);
+
 }

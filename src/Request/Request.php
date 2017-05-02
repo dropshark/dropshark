@@ -7,9 +7,9 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 
 /**
- * Class DropSharkRequest.
+ * Class Request.
  */
-class DropSharkRequest implements RequestInterface {
+class Request implements RequestInterface {
 
   /**
    * The URL to the DropShark backend.
@@ -55,10 +55,7 @@ class DropSharkRequest implements RequestInterface {
   public function checkToken() {
     $result = new \stdClass();
 
-    $options = [];
-    if ($this->token) {
-      $options['headers']['Authorization'] = $this->token;
-    }
+    $options = $this->requestOptions();
 
     try {
       $response = $this->httpClient->request('get', $this->host . '/sites/token', $options);
@@ -99,6 +96,28 @@ class DropSharkRequest implements RequestInterface {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function postData($data) {
+    $options = $this->requestOptions($data);
+    $result = new \stdClass();
+
+    try {
+      $response = $this->httpClient->request('post', $this->host . '/data', $options);
+      $result->code = $response->getStatusCode();
+      $result->data = \GuzzleHttp\json_decode($response->getBody());
+    }
+    catch (ClientException $e) {
+      if ($e->hasResponse()) {
+        $result->code = $e->getResponse()->getStatusCode();
+        $result->data = \GuzzleHttp\json_decode($e->getResponse()->getBody());
+      }
+    }
+
+    return $result;
+  }
+
+  /**
    * Prepares an array of options for Guzzle requests.
    *
    * @param array $params
@@ -107,7 +126,7 @@ class DropSharkRequest implements RequestInterface {
    * @return array
    *   Options to use for a Guzzle request.
    */
-  protected function requestOptions($params) {
+  protected function requestOptions(array $params = []) {
     $options = [];
 
     if (!empty($params)) {

@@ -2,7 +2,10 @@
 
 namespace Drupal\dropshark\Queue;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Database\Connection;
 use Drupal\dropshark\Collector\CollectorInterface;
+use Drupal\dropshark\Request\RequestInterface;
 
 /**
  * Class DbQueue.
@@ -10,59 +13,264 @@ use Drupal\dropshark\Collector\CollectorInterface;
 class DbQueue implements QueueInterface {
 
   /**
+   * Configuration.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
+
+  /**
+   * The lock currently in use.
+   *
+   * @var string
+   */
+  protected $currentLock;
+
+  /**
+   * Data collected throughout the request.
+   *
+   * @var array
+   */
+  protected $data = [];
+
+  /**
+   * The database.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $db;
+
+  /**
+   * Deferred collectors.
+   *
+   * @var \Drupal\dropshark\Collector\CollectorInterface[]
+   */
+  protected $deferred;
+
+  /**
+   * Indicates that the queue should transmit during the current HTTP request.
+   *
+   * @var bool
+   */
+  protected $immediateTransmit = FALSE;
+
+  /**
+   * Request handler.
+   *
+   * @var \Drupal\dropshark\Request\RequestInterface
+   */
+  protected $request;
+
+  /**
+   * DbQueue constructor.
+   *
+   * @param \Drupal\Core\Database\Connection $db
+   *   The database.
+   * @param \Drupal\dropshark\Request\RequestInterface $request
+   *   Request handler.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   Configuration options.
+   */
+  public function __construct(Connection $db, RequestInterface $request, ConfigFactoryInterface $configFactory) {
+    $this->db = $db;
+    $this->request = $request;
+    $this->config = $configFactory->get('dropshark.settings');
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function add(array $data) {
-    // TODO: Implement add() method.
+    $item['ds_timestamp'] = $data['created'] = $this->timestamp();
+    $data['data'] = $item;
+    $this->data[] = $data;
+  }
+
+  /**
+   * Clear expired locks from queue items.
+   *
+   * @param $timestamp
+   *   The timestamp for which to check lock expiration, defaults to current
+   *   time minus the lock expiration configuration.
+   */
+  public function clearLocks($timestamp = NULL) {
+    if (!$timestamp) {
+      $timestamp = $this->timestamp() - $this->config->get('queue.lock_max');
+    }
+    $query = 'UPDATE {dropshark_queue} SET lock_id = NULL , lock_time = NULL WHERE lock_time < ?';
+    $this->db->query($query, array($timestamp));
+  }
+
+  /**
+   * Gets items from persistent storage.
+   *
+   * @return array
+   */
+  protected function getItems() {
+    // Lock the next X items.
+    $this->currentLock = $this->lock();
+
+    $query = 'SELECT data FROM {dropshark_queue} WHERE lock_id = ? ORDER BY created';
+
+    $data = array();
+    foreach ($this->db->query($query, array($this->currentLock)) as $item) {
+      $data[] = array(
+        'type' => 'persistent',
+        'data' => json_decode($item->data),
+      );
+    }
+
+    return $data;
   }
 
   /**
    * {@inheritdoc}
    */
   public function hasDeferred() {
-    // TODO: Implement hasDeferred() method.
+    return !empty($this->deferred);
+  }
+
+  /**
+   * Lock a set of items to prevent duplicate processing.
+   *
+   * @return string
+   *   The key of the locked items.
+   */
+  protected function lock() {
+    mt_srand(time() / __LINE__);
+    $key = md5(__METHOD__ . microtime() . mt_rand(0, 999999));
+
+    $query = 'UPDATE {dropshark_queue} SET lock_id = ? , lock_time = ? WHERE lock_id IS NULL ORDER BY CREATED';
+    $this->db->query($query, array($key, $this->timestamp()));
+
+    return $key;
   }
 
   /**
    * {@inheritdoc}
    */
   public function needsImmediateTransmit() {
-    // TODO: Implement needsImmediateTransmit() method.
+    return $this->immediateTransmit;
   }
 
   /**
    * {@inheritdoc}
    */
   public function persist() {
-    // TODO: Implement persist() method.
+    // @TODO: write these in a batch or batches.
+    foreach ($this->data as $item) {
+      $this->db->insert('dropshark_queue')
+        ->fields([
+        'created' => $item['created'],
+        'data' => json_encode($item['data']),
+        ])->execute();
+    }
+    $this->data = [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function processDeferred() {
-    // TODO: Implement processDeferred() method.
+    foreach ($this->deferred as $collector) {
+      $collector->finalize();
+    }
+    $this->deferred = [];
+  }
+
+  /**
+   * Removes items from the queue by lock.
+   */
+  protected function removeItems() {
+    if (!$this->currentLock) {
+      return;
+    }
+
+    $query = 'DELETE FROM {dropshark_queue} WHERE lock_id = ?';
+    $this->db->query($query, array($this->currentLock));
+    $this->currentLock = NULL;
   }
 
   /**
    * {@inheritdoc}
    */
   public function setDeferred(CollectorInterface $collector) {
-    // TODO: Implement setDeferred() method.
+    $this->deferred[] = $collector;
   }
 
   /**
    * {@inheritdoc}
    */
   public function setImmediateTransmit() {
-    // TODO: Implement setImmediateTransmit() method.
+    $this->immediateTransmit = TRUE;
+  }
+
+  /**
+   * Provides a timestamp for queue entries.
+   *
+   * @return int
+   *   Unix type timestamp of when the queue item was added.
+   */
+  protected function timestamp() {
+    return time();
   }
 
   /**
    * {@inheritdoc}
    */
   public function transmit() {
-    // TODO: Implement transmit() method.
+    // Clear any old stuff that didn't finish processing.
+    $this->clearLocks();
+
+    // Get persisted items, merge with static items.
+    $items = array_merge($this->getItems(), $this->data);
+    $data = array();
+    foreach ($items as $item) {
+      $data[] = $item['data'];
+    }
+
+    // Attempt to transmit.
+    $result = $this->transmitItems($data);
+    if ($result->code != 200) {
+      // Handle error.
+      $this->unlock();
+      $this->persist();
+    }
+    else {
+      // On success clear data from queue.
+      $this->removeItems();
+      $this->data = array();
+    }
+
+    $this->deferred = array();
+    $this->immediateTransmit = FALSE;
+  }
+
+  /**
+   * Process queued items.
+   *
+   * @param array $items
+   *   Data to be transmitted.
+   *
+   * @return object
+   */
+  protected function transmitItems($items) {
+    $params['data'] = json_encode($items);
+    $params['site_id'] = $this->config->get('site_id');
+    return $this->request->postData($params);
+  }
+
+  /**
+   * Unlock queued items.
+   */
+  protected function unlock() {
+    if (!$this->currentLock) {
+      return;
+    }
+
+    $query = 'UPDATE {dropshark_queue} SET lock_id = NULL WHERE lock_id = ?';
+    $this->db->query($query, array($this->currentLock));
+    $this->currentLock = NULL;
   }
 
 }
