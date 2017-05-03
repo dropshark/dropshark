@@ -8,6 +8,7 @@ use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\dropshark\Fingerprint\FingerprintInterface;
 use Drupal\dropshark\Queue\QueueAwareTrait;
 use Drupal\dropshark\Queue\QueueInterface;
+use Drupal\dropshark\Util\LinfoFactory;
 
 /**
  * Class CollectorManager.
@@ -30,8 +31,10 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
    *   DropShark queue handler service.
    * @param \Drupal\dropshark\Fingerprint\FingerprintInterface $fingerprint
    *   DropShark fingerprint service.
+   * @param \Drupal\dropshark\Util\LinfoFactory $linfoFactory
+   *   The Linfo factory service.
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, QueueInterface $queue, FingerprintInterface $fingerprint) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, QueueInterface $queue, FingerprintInterface $fingerprint, LinfoFactory $linfoFactory) {
     parent::__construct(
       'Plugin/DropShark/Collector',
       $namespaces,
@@ -42,9 +45,14 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
     $this->alterInfo('dropshark_collector_info');
     $this->setCacheBackend($cache_backend, 'dropshark_collectors');
     $this->factory = new CollectorFactory($this->getDiscovery(), CollectorInterface::class);
+
     $this->factory->setFingerprint($fingerprint)
       ->setModuleHandler($module_handler)
       ->setQueue($queue);
+
+    if ($linfo = $linfoFactory->createInstance()) {
+      $this->factory->setLinfo($linfo);
+    }
 
     $this->queue = $queue;
   }
