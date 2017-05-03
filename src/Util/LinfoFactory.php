@@ -42,6 +42,7 @@ class LinfoFactory {
    * Creates the Linfo instance.
    *
    * @return false|\Linfo\Linfo
+   *   The instantiated Linfo object, or FALSE if not available.
    */
   public function createInstance() {
     if ($this->linfo === NULL) {
@@ -53,7 +54,7 @@ class LinfoFactory {
       }
 
       // Instantiate Linfo if available.
-      if (!class_exists('\Linfo\Linfo')) {
+      if (class_exists('\Linfo\Linfo')) {
         $settings['show']['mounts_options'] = FALSE;
         $this->linfo = new Linfo($settings);
       }
