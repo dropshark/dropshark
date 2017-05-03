@@ -7,8 +7,6 @@
 
 define('DROPSHARK_HOST_DEFAULT', 'https://data.dropshark.io');
 define('DROPSHARK_QUEUE_DEFAULT', '\Drupal\dropshark\Queue\DbQueue');
-define('DROPSHARK_QUEUE_LOCK_MAX_DEFAULT', 300);
-define('DROPSHARK_QUEUE_MAX_PROCESS_DEFAULT', 100);
 define('DROPSHARK_REQUEST_DEFAULT', '\Drupal\dropshark\Request\Request');
 define('DROPSHARK_LINFO_AUTOLOADER', 'libraries/linfo/standalone_autoload.php');
 
@@ -50,5 +48,7 @@ function dropshark_finalize_request() {
  * Implements hook_cron().
  */
 function dropshark_cron() {
-  // Get the plugin manager, invoke collection w/immediate transmit.
+  /** @var \Drupal\dropshark\Collector\CollectorManagerInterface $collectorManager */
+  $collectorManager = Drupal::service('plugin.manager.dropshark_collector');
+  $collectorManager->collect(['all'], [], TRUE);
 }
