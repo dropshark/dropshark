@@ -6,9 +6,15 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\dropshark\Fingerprint\FingerprintInterface;
+use Drupal\dropshark\Queue\QueueAwareTrait;
 use Drupal\dropshark\Queue\QueueInterface;
 
+/**
+ * Class CollectorManager.
+ */
 class CollectorManager extends DefaultPluginManager implements CollectorManagerInterface {
+
+  use QueueAwareTrait;
 
   /**
    * Constructs a DropSharkCollectorManager object.
@@ -39,12 +45,14 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
     $this->factory->setFingerprint($fingerprint)
       ->setModuleHandler($module_handler)
       ->setQueue($queue);
+
+    $this->queue = $queue;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function collect(array $events, $data = array()) {
+  public function collect(array $events, $data = array(), $immediate = FALSE) {
     foreach ($this->getDefinitions() as $pluginId => $definition) {
       /** @var \Drupal\dropshark\Collector\Annotation\DropSharkCollector $definition */
       if (in_array('all', $events) || array_intersect($events, $definition->events)) {
@@ -54,6 +62,13 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
       }
     }
 
+    if ($immediate) {
+      $this->queue->setImmediateTransmit();
+    }
+
+    if ($this->queue->needsImmediateTransmit() || $this->queue->hasDeferred()) {
+      dropshark_set_shutdown_function();
+    }
   }
 
 }
