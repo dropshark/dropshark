@@ -5,3 +5,4 @@ cron: true
 queue:
   lock_max: 300
   max_process: 100
+linfo_path: libraries/linfo/standalone_autoload.php
