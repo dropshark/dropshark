@@ -2,13 +2,9 @@
 
 namespace Drupal\dropshark\Collector;
 
-use Drupal\Core\Cache\CacheBackendInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\dropshark\Fingerprint\FingerprintInterface;
 use Drupal\dropshark\Queue\QueueAwareTrait;
-use Drupal\dropshark\Queue\QueueInterface;
-use Drupal\dropshark\Util\LinfoFactory;
+use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
 
 /**
  * Class CollectorManager.
@@ -20,34 +16,41 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
   /**
    * Constructs a DropSharkCollectorManager object.
    *
-   * @param \Traversable $namespaces
-   *   An object that implements \Traversable which contains the root paths
-   *   keyed by the corresponding namespace to look for plugin implementations,
-   * @param \Drupal\Core\Cache\CacheBackendInterface $cache_backend
-   *   Cache backend instance to use.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler to invoke the alter hook with.
-   * @param \Drupal\dropshark\Queue\QueueInterface $queue
-   *   DropShark queue handler service.
-   * @param \Drupal\dropshark\Fingerprint\FingerprintInterface $fingerprint
-   *   DropShark fingerprint service.
-   * @param \Drupal\dropshark\Util\LinfoFactory $linfoFactory
-   *   The Linfo factory service.
+   * @param \Symfony\Component\DependencyInjection\IntrospectableContainerInterface $container
+   *   The service container.
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, QueueInterface $queue, FingerprintInterface $fingerprint, LinfoFactory $linfoFactory) {
+  public function __construct(IntrospectableContainerInterface $container) {
+    /** @var \Traversable $namespaces */
+    $namespaces = $container->get('container.namespaces');
+
+    /** @var \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler */
+    $moduleHandler = $container->get('module_handler');
+
+    /** @var \Drupal\Core\Cache\CacheBackendInterface $cacheBackend */
+    $cacheBackend = $container->get('cache.discovery');
+
+    /** @var \Drupal\dropshark\Fingerprint\FingerprintInterface $fingerprint */
+    $fingerprint = $container->get('dropshark.fingerprint');
+
+    /** @var \Drupal\dropshark\Queue\QueueInterface $queue */
+    $queue = $container->get('dropshark.queue');
+
+    /** @var \Drupal\dropshark\Util\LinfoFactory $linfoFactory */
+    $linfoFactory = $container->get('dropshark.linfo_factory');
+
     parent::__construct(
       'Plugin/DropShark/Collector',
       $namespaces,
-      $module_handler,
+      $moduleHandler,
       'Drupal\dropshark\Collector\CollectorInterface',
       'Drupal\dropshark\Collector\Annotation\DropSharkCollector'
     );
     $this->alterInfo('dropshark_collector_info');
-    $this->setCacheBackend($cache_backend, 'dropshark_collectors');
+    $this->setCacheBackend($cacheBackend, 'dropshark_collectors');
     $this->factory = new CollectorFactory($this->getDiscovery(), CollectorInterface::class);
 
     $this->factory->setFingerprint($fingerprint)
-      ->setModuleHandler($module_handler)
+      ->setModuleHandler($moduleHandler)
       ->setQueue($queue);
 
     if ($linfo = $linfoFactory->createInstance()) {
