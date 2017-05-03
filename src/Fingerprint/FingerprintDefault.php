@@ -11,6 +11,13 @@ use Drupal\Core\DrupalKernelInterface;
 class FingerprintDefault implements FingerprintInterface {
 
   /**
+   * The computed fingerprint.
+   *
+   * @var string
+   */
+  protected $fingerprint;
+
+  /**
    * The kernel.
    *
    * @var \Drupal\Core\DrupalKernelInterface
@@ -42,28 +49,14 @@ class FingerprintDefault implements FingerprintInterface {
    * {@inheritdoc}
    */
   public function getFingerprint() {
-    $dir = $_SERVER['HOME'] . '/.dropshark/fingerprints';
-    $dir = $_SERVER['HOME'] . '/ds/fingerprints';
-    $file = $dir . '/' . $this->siteId;
-
-    if (!is_file($file)) {
-      if (!is_dir($dir)) {
-        @mkdir($dir, 0755, TRUE);
-      }
-
-      $fingerprint['host'] = $_SERVER['HTTP_HOST'];
+    if (!$this->fingerprint) {
+      $fingerprint['host'] = $_SERVER['SERVER_NAME'];
       $fingerprint['app_root'] = $this->kernel->getAppRoot();
       $fingerprint['site_path'] = $this->kernel->getSitePath();
-      $timestamp = explode(' ', microtime());
-      $fingerprint['timestamp'] = $timestamp[1] . $timestamp[0];
-      $fingerprint = base64_encode(json_encode($timestamp));
-      file_put_contents($file, $fingerprint);
-    }
-    else {
-      $fingerprint = file_get_contents($file);
+      $this->fingerprint = base64_encode(json_encode($fingerprint));
     }
 
-    return $fingerprint;
+    return $this->fingerprint;
   }
 
 }
