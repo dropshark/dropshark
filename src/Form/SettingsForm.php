@@ -7,8 +7,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
-use Drupal\dropshark\Fingerprint\FingerprintAwareTrait;
-use Drupal\dropshark\Fingerprint\FingerprintInterface;
+use Drupal\dropshark\Collector\CollectorManager;
 use Drupal\dropshark\Request\RequestInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -16,6 +15,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Class SettingsForm.
  */
 class SettingsForm extends ConfigFormBase {
+
+  /**
+   * DropShark queue handling service.
+   *
+   * @var \Drupal\dropshark\Collector\CollectorManager
+   */
+  protected $collectorManager;
 
   /**
    * Request handler.
@@ -31,10 +37,13 @@ class SettingsForm extends ConfigFormBase {
    *   The factory for configuration objects.
    * @param \Drupal\dropshark\Request\RequestInterface $request
    *   Request handler.
+   * @param \Drupal\dropshark\Collector\CollectorManager $collectorManager
+   *   Collector manager.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, RequestInterface $request) {
+  public function __construct(ConfigFactoryInterface $configFactory, RequestInterface $request, CollectorManager $collectorManager) {
     parent::__construct($configFactory);
     $this->request = $request;
+    $this->collectorManager = $collectorManager;
   }
 
   /**
@@ -43,7 +52,8 @@ class SettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('dropshark.request')
+      $container->get('dropshark.request'),
+      $container->get('plugin.manager.dropshark_collector')
     );
   }
 
@@ -136,8 +146,7 @@ class SettingsForm extends ConfigFormBase {
     $result = $this->request->getToken(
       $form_state->getValue('email'),
       $form_state->getValue('password'),
-      $form_state->getValue('site_id'),
-      ''
+      $form_state->getValue('site_id')
     );
 
     if (!empty($result->data->token)) {
@@ -261,7 +270,7 @@ class SettingsForm extends ConfigFormBase {
    * Performs an on-demand collection of site data.
    */
   public function statusFormCollectSubmit() {
-
+    $this->collectorManager->collect(['all'], [], TRUE);
   }
 
   /**
