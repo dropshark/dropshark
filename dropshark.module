@@ -48,7 +48,10 @@ function dropshark_finalize_request() {
  * Implements hook_cron().
  */
 function dropshark_cron() {
-  /** @var \Drupal\dropshark\Collector\CollectorManagerInterface $collectorManager */
-  $collectorManager = Drupal::service('plugin.manager.dropshark_collector');
-  $collectorManager->collect(['all'], [], TRUE);
+  $config = \Drupal::configFactory()->get('dropshark.settings');
+  if ($config->get('cron')) {
+    /** @var \Drupal\dropshark\Collector\CollectorManagerInterface $collectorManager */
+    $collectorManager = Drupal::service('plugin.manager.dropshark_collector');
+    $collectorManager->collect(['all'], [], TRUE);
+  }
 }
