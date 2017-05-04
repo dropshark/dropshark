@@ -80,7 +80,7 @@ class DbQueue implements QueueInterface {
   /**
    * {@inheritdoc}
    */
-  public function add(array $data) {
+  public function add(array $item) {
     $item['ds_timestamp'] = $data['created'] = $this->timestamp();
     $data['data'] = $item;
     $this->data[] = $data;
