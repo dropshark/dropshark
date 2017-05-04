@@ -31,7 +31,7 @@ class LinfoFactory {
    * LinfoFactory constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   *
+   *   Configuration factory service.
    */
   public function __construct(ConfigFactoryInterface $configFactory) {
     $this->autoloadPath = $configFactory->get('dropshark.settings')

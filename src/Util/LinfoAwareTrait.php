@@ -7,7 +7,7 @@ use Linfo\Linfo;
 /**
  * Trait LinfoAwareTrait.
  */
-trait LinfoAwareTrait  {
+trait LinfoAwareTrait {
 
   /**
    * The linfo instance.
