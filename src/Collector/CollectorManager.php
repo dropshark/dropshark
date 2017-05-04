@@ -2,6 +2,7 @@
 
 namespace Drupal\dropshark\Collector;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\dropshark\Queue\QueueAwareTrait;
 use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
@@ -38,6 +39,9 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
     /** @var \Drupal\dropshark\Util\LinfoFactory $linfoFactory */
     $linfoFactory = $container->get('dropshark.linfo_factory');
 
+    /** @var \Drupal\Core\Config\ConfigFactoryInterface $configFactory */
+    $configFactory = $container->get('config.factory');
+
     parent::__construct(
       'Plugin/DropShark/Collector',
       $namespaces,
@@ -49,7 +53,8 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
     $this->setCacheBackend($cacheBackend, 'dropshark_collectors');
     $this->factory = new CollectorFactory($this->getDiscovery(), CollectorInterface::class);
 
-    $this->factory->setFingerprint($fingerprint)
+    $this->factory->setConfig($configFactory->get('dropshark.settings'))
+      ->setFingerprint($fingerprint)
       ->setModuleHandler($moduleHandler)
       ->setQueue($queue);
 

@@ -5,6 +5,8 @@ namespace Drupal\dropshark\Collector;
 use Drupal\Component\Plugin\Factory\DefaultFactory;
 use Drupal\dropshark\Fingerprint\FingerprintAwareTrait;
 use Drupal\dropshark\Queue\QueueAwareTrait;
+use Drupal\dropshark\Util\ConfigAwareInterface;
+use Drupal\dropshark\Util\ConfigAwareTrait;
 use Drupal\dropshark\Util\LinfoAwareInterface;
 use Drupal\dropshark\Util\LinfoAwareTrait;
 use Drupal\dropshark\Util\ModuleHandlerAwareInterface;
@@ -15,8 +17,9 @@ use Drupal\dropshark\Util\ModuleHandlerAwareTrait;
  *
  * Instantiates collector plugins.
  */
-class CollectorFactory extends DefaultFactory {
+class CollectorFactory extends DefaultFactory implements ConfigAwareInterface {
 
+  use ConfigAwareTrait;
   use FingerprintAwareTrait;
   use LinfoAwareTrait;
   use ModuleHandlerAwareTrait;
@@ -28,7 +31,10 @@ class CollectorFactory extends DefaultFactory {
   public function createInstance($plugin_id, array $configuration = array()) {
     /** @var \Drupal\dropshark\Collector\CollectorInterface $plugin */
     $plugin = parent::createInstance($plugin_id, $configuration);
-    $plugin->setFingerprint($this->fingerprint)->setQueue($this->queue);
+
+    $plugin->setConfig($this->config)
+      ->setFingerprint($this->fingerprint)
+      ->setQueue($this->queue);
 
     if ($plugin instanceof LinfoAwareInterface) {
       $plugin->setLinfo($this->linfo);

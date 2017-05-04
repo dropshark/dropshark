@@ -25,7 +25,6 @@ class UpdateStatusCollector extends CollectorBase implements ModuleHandlerAwareI
    * {@inheritdoc}
    */
   public function collect($data = array()) {
-
     $data = $this->defaultResult();
 
     try {
