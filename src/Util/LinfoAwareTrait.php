@@ -17,6 +17,13 @@ trait LinfoAwareTrait  {
   protected $linfo;
 
   /**
+   * The Linfo parser object.
+   *
+   * @var mixed
+   */
+  protected $parser;
+
+  /**
    * Set the Linfo instance.
    *
    * @param \Linfo\Linfo $linfo
@@ -26,6 +33,7 @@ trait LinfoAwareTrait  {
    */
   public function setLinfo(Linfo $linfo) {
     $this->linfo = $linfo;
+    $this->parser = $linfo->getParser();
     return $this;
   }
 
