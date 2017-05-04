@@ -27,7 +27,7 @@ class DrupalStatusCollector extends CollectorBase implements ModuleHandlerAwareI
   public function collect(array $data = []) {
     $data = $this->defaultResult();
 
-    // Load .install files
+    // Load .install files.
     include_once DRUPAL_ROOT . '/core/includes/install.inc';
     drupal_load_updates();
 
@@ -36,25 +36,26 @@ class DrupalStatusCollector extends CollectorBase implements ModuleHandlerAwareI
     ksort($requirements);
 
     // Count number of requirements at each status.
-    $severities = array(
+    $severities = [
       'error' => 0,
       'info' => 0,
       'ok' => 0,
       'warning' => 0,
       'none' => 0,
-    );
-    $severities_map = array(
+    ];
+    $severities_map = [
       REQUIREMENT_ERROR => 'error',
       REQUIREMENT_INFO => 'info',
       REQUIREMENT_OK => 'ok',
       REQUIREMENT_WARNING => 'warning',
       'none' => 0,
-    );
+    ];
     foreach ($requirements as $requirement) {
       if (isset($requirement['severity'])) {
         $key = $severities_map[$requirement['severity']];
         $severities[$key]++;
-      } else {
+      }
+      else {
         $severities['none']++;
       }
     }
