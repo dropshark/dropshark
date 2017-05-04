@@ -17,7 +17,7 @@ use Prophecy\Argument;
 class DbQueueTest extends BrowserTestBase {
 
   /**
-   * {@inherit}
+   * {@inheritdoc}
    */
   public static $modules = ['dropshark'];
 
@@ -47,9 +47,9 @@ class DbQueueTest extends BrowserTestBase {
     $lockQuery = 'UPDATE {dropshark_queue} SET lock_id = ? , lock_time = ? LIMIT 1';
 
     // Add items to queue.
-    $q->add(array('data_1'));
-    $q->add(array('data_2'));
-    $q->add(array('data_3'));
+    $q->add(['data_1']);
+    $q->add(['data_2']);
+    $q->add(['data_3']);
 
     // Check that the added data was not yet persistently stored.
     $val = $db->query($countQuery)->fetchField();
@@ -62,7 +62,7 @@ class DbQueueTest extends BrowserTestBase {
     $this->assertEquals(3, $val, '3 items in queue.');
 
     // Lock one item and process the queue.
-    $db->query($lockQuery, array(__FUNCTION__, time() - 295));
+    $db->query($lockQuery, [__FUNCTION__, time() - 295]);
     $q->transmit();
 
     // Verify locked item remains, others processed.
@@ -70,7 +70,7 @@ class DbQueueTest extends BrowserTestBase {
     $this->assertEquals(1, $val, '1 item remaining in queue.');
 
     // Expire the remaining lock.
-    $db->query($lockQuery, array(__FUNCTION__, time() - 305));
+    $db->query($lockQuery, [__FUNCTION__, time() - 305]);
     $q->transmit();
 
     // Verify lock expires.
