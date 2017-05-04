@@ -27,19 +27,19 @@ class CollectionController extends ControllerBase {
 
     if ($key != $request->query->get('key')) {
       $response->setStatusCode(404);
-      $response->setData(array(
+      $response->setData([
         'error' => 'invalid key',
         'timestamp' => date('c'),
-      ));
+      ]);
       return $response;
     }
 
     // Do some collecting.
-    $response->setData(array(
+    $response->setData([
       'code' => 200,
       'result' => 'Data collection complete.',
       'timestamp' => date('c'),
-    ));
+    ]);
 
     return $response;
   }

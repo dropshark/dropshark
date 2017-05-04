@@ -77,7 +77,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return array('dropshark.settings');
+    return ['dropshark.settings'];
   }
 
   /**
@@ -99,42 +99,42 @@ class SettingsForm extends ConfigFormBase {
   protected function registrationForm(array $form) {
     $config = $this->config('dropshark.settings');
 
-    $form['instructions']['#markup'] = $this->t('In order to register your site with the DropShark service, you\'ll need to enter your credentials and site identifier.');
+    $form['instructions']['#markup'] = $this->t("In order to register your site with the DropShark service, you'll need to enter your credentials and site identifier.");
     $form['instructions']['#prefix'] = '<p>';
     $form['instructions']['#suffix'] = '</p>';
 
-    $form['email'] = array(
+    $form['email'] = [
       '#type' => 'email',
       '#title' => $this->t('Email address'),
-      '#description' => $this->t('Enter the email address which you\'ve registered for DropShark.'),
+      '#description' => $this->t("Enter the email address which you've registered for DropShark."),
       '#required' => TRUE,
-    );
+    ];
 
-    $form['password'] = array(
+    $form['password'] = [
       '#type' => 'password',
       '#title' => $this->t('DropShark password'),
       '#description' => $this->t('Enter your DropShark password.'),
       '#required' => TRUE,
-    );
+    ];
 
-    $form['site_id'] = array(
+    $form['site_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Site ID'),
       '#description' => $this->t('Find your site identifier on your DropShark dashboard.'),
       '#default_value' => $config->get('site_id'),
       '#required' => TRUE,
-    );
+    ];
 
-    $form['submit'] = array(
+    $form['submit'] = [
       '#value' => $this->t('Register site'),
       '#type' => 'submit',
-      '#element_validate' => array(
-        array($this, 'registrationFormValidate')
-      ),
-      '#submit' => array(
-        array($this, 'registrationFormSubmit')
-      ),
-    );
+      '#element_validate' => [
+        [$this, 'registrationFormValidate'],
+      ],
+      '#submit' => [
+        [$this, 'registrationFormSubmit'],
+      ],
+    ];
 
     return $form;
   }
@@ -187,59 +187,59 @@ class SettingsForm extends ConfigFormBase {
     $form['instructions']['#prefix'] = '<p>';
     $form['instructions']['#suffix'] = '</p>';
 
-    $form['status'] = array(
+    $form['status'] = [
       '#type' => 'item',
       '#title' => $this->t('Site ID'),
       '#plain_text' => $config->get('site_id'),
-    );
+    ];
 
-    $form['check'] = array(
-      '#title' => t('Check connection'),
+    $form['check'] = [
+      '#title' => $this->t('Check connection'),
       '#type' => 'fieldset',
-    );
-    $form['check']['instructions']['#markup'] = t('Verify that your site is able to submit data to DropShark.');
+    ];
+    $form['check']['instructions']['#markup'] = $this->t('Verify that your site is able to submit data to DropShark.');
     $form['check']['instructions']['#prefix'] = '<p>';
     $form['check']['instructions']['#suffix'] = '</p>';
-    $form['check']['submit'] = array(
+    $form['check']['submit'] = [
       '#value' => $this->t('Check'),
       '#type' => 'submit',
-      '#submit' => array(
-        array($this, 'statusFormCheckSubmit'),
-      ),
-    );
+      '#submit' => [
+        [$this, 'statusFormCheckSubmit'],
+      ],
+    ];
 
-    $form['reset'] = array(
-      '#title' => t('Reset token'),
+    $form['reset'] = [
+      '#title' => $this->t('Reset token'),
       '#type' => 'fieldset',
-    );
-    $form['reset']['instructions']['#markup'] = t('If you\'re having trouble connecting to DropShark, try resetting the token then re-registering the site.');
+    ];
+    $form['reset']['instructions']['#markup'] = $this->t("If you're having trouble connecting to DropShark, try resetting the token then re-registering the site.");
     $form['reset']['instructions']['#prefix'] = '<p>';
     $form['reset']['instructions']['#suffix'] = '</p>';
-    $form['reset']['submit'] = array(
+    $form['reset']['submit'] = [
       '#value' => $this->t('Reset'),
       '#type' => 'submit',
-      '#submit' => array(
-        array($this, 'statusFormResetSubmit'),
-      ),
-    );
+      '#submit' => [
+        [$this, 'statusFormResetSubmit'],
+      ],
+    ];
 
-    $form['collect'] = array(
-      '#title' => t('Collect'),
+    $form['collect'] = [
+      '#title' => $this->t('Collect'),
       '#type' => 'fieldset',
-    );
-    $form['collect']['instructions'][0]['#markup'] = t('DropShark will attempt to submit your data during Drupal\'s cron. You may also want to set up a dedicated cron task dedicated to collecting DropShark data.');
+    ];
+    $form['collect']['instructions'][0]['#markup'] = $this->t("DropShark will attempt to submit your data during Drupal's cron. You may also want to set up a dedicated cron task dedicated to collecting DropShark data.");
     $form['collect']['instructions'][0]['#prefix'] = '<p>';
     $form['collect']['instructions'][0]['#suffix'] = '</p>';
-    $form['collect']['instructions'][1]['#markup'] = t('Use this function to perform a real time collection of data from your site.');
+    $form['collect']['instructions'][1]['#markup'] = $this->t('Use this function to perform a real time collection of data from your site.');
     $form['collect']['instructions'][1]['#prefix'] = '<p>';
     $form['collect']['instructions'][1]['#suffix'] = '</p>';
-    $form['collect']['submit'] = array(
+    $form['collect']['submit'] = [
       '#value' => $this->t('Collect'),
       '#type' => 'submit',
-      '#submit' => array(
-        array($this, 'statusFormCollectSubmit')
-      ),
-    );
+      '#submit' => [
+        [$this, 'statusFormCollectSubmit'],
+      ],
+    ];
 
     return $form;
   }
@@ -251,9 +251,10 @@ class SettingsForm extends ConfigFormBase {
     $result = $this->request->checkToken();
 
     if (empty($result->data->site_id)) {
-      drupal_set_message(t('Unable to verify the site connection.'), 'error');
-    } else {
-      drupal_set_message(t('Connection successfully verified.'));
+      drupal_set_message($this->t('Unable to verify the site connection.'), 'error');
+    }
+    else {
+      drupal_set_message($this->t('Connection successfully verified.'));
     }
   }
 
