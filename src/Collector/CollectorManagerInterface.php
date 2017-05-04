@@ -23,6 +23,6 @@ interface CollectorManagerInterface {
    *   and transmitted the next time a collection occurs that triggers sending.
    *   Options, defaults to FALSE.
    */
-  public function collect(array $events, $data = array(), $immediate = FALSE);
+  public function collect(array $events, array $data = [], $immediate = FALSE);
 
 }

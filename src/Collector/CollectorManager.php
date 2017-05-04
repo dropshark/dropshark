@@ -2,7 +2,6 @@
 
 namespace Drupal\dropshark\Collector;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\dropshark\Queue\QueueAwareTrait;
 use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
@@ -68,7 +67,7 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
   /**
    * {@inheritdoc}
    */
-  public function collect(array $events, $data = array(), $immediate = FALSE) {
+  public function collect(array $events, array $data = [], $immediate = FALSE) {
     foreach ($this->getDefinitions() as $pluginId => $definition) {
       /** @var \Drupal\dropshark\Collector\Annotation\DropSharkCollector $definition */
       if (in_array('all', $events) || array_intersect($events, $definition->events)) {

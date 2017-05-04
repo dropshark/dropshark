@@ -39,7 +39,7 @@ abstract class CollectorBase extends PluginBase implements CollectorInterface {
    *   Array of collected data.
    */
   protected function defaultResult($type = NULL) {
-    $result = array();
+    $result = [];
 
     if (!$type) {
       $type = $this->getPluginId();

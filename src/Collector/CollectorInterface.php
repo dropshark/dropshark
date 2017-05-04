@@ -9,7 +9,7 @@ use Drupal\dropshark\Util\ConfigAwareInterface;
 /**
  * Interface CollectorInterface.
  */
-interface CollectorInterface extends ConfigAwareInterface,FingerprintAwareInterface, QueueAwareInterface {
+interface CollectorInterface extends ConfigAwareInterface, FingerprintAwareInterface, QueueAwareInterface {
 
   /**
    * Indicates a successful collection of data.
@@ -24,7 +24,7 @@ interface CollectorInterface extends ConfigAwareInterface,FingerprintAwareInterf
    * @param array $data
    *   Optional, data utilized by the collector.
    */
-  public function collect($data = array());
+  public function collect(array $data = []);
 
   /**
    * Perform checks which were deferred until the end of the request.

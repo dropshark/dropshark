@@ -28,7 +28,7 @@ class CollectorFactory extends DefaultFactory implements ConfigAwareInterface {
   /**
    * {@inheritdoc}
    */
-  public function createInstance($plugin_id, array $configuration = array()) {
+  public function createInstance($plugin_id, array $configuration = []) {
     /** @var \Drupal\dropshark\Collector\CollectorInterface $plugin */
     $plugin = parent::createInstance($plugin_id, $configuration);
 
