@@ -53,7 +53,8 @@ means:
  * Set up a cron task that makes a HTTP request to your site as often as you
    wish to collect data. The path is "dropshark/collect" and the request needs
    to contain a URL parameter named "key" with the value of the site's DropShark
-   site ID. Example http://mysite.com/dropshark/collect?key= 50e7b4ca-3576-435e-8ead-523ee9d4054e.
+   site ID. Example http://mysite.com/dropshark/collect?key=
+   50e7b4ca-3576-435e-8ead-523ee9d4054e.
 
  * Configure Elysia Cron (https://www.drupal.org/project/elysia_cron) to invoke
    the DropShark module's hook_cron() implementation as often as you wish.

@@ -11,37 +11,37 @@ use Drupal\Core\Link;
  * Implements hook_schema().
  */
 function dropshark_schema() {
-  $schema['dropshark_queue'] = array(
+  $schema['dropshark_queue'] = [
     'description' => 'Data queued for submission to the DropShark service.',
-    'fields' => array(
-      'created' => array(
+    'fields' => [
+      'created' => [
         'description' => 'Timestamp of when the item was added to the queue.',
         'type' => 'int',
         'not null' => TRUE,
-      ),
-      'lock_id' => array(
+      ],
+      'lock_id' => [
         'description' => 'Lock ID.',
         'type' => 'varchar',
         'length' => '255',
         'not null' => FALSE,
-      ),
-      'lock_time' => array(
+      ],
+      'lock_time' => [
         'description' => 'Lock time.',
         'type' => 'int',
         'not null' => FALSE,
-      ),
-      'data' => array(
+      ],
+      'data' => [
         'description' => 'JSON-encoded data.',
         'type' => 'blob',
         'not null' => TRUE,
-      ),
-    ),
-    'indexes' => array(
-      'created' => array('created'),
-      'lock_id' => array('lock_id'),
-      'lock_time' => array('lock_time'),
-    ),
-  );
+      ],
+    ],
+    'indexes' => [
+      'created' => ['created'],
+      'lock_id' => ['lock_id'],
+      'lock_time' => ['lock_time'],
+    ],
+  ];
 
   return $schema;
 }
@@ -50,7 +50,7 @@ function dropshark_schema() {
  * Implements hook_requirements().
  */
 function dropshark_requirements($phase) {
-  $requirements = array();
+  $requirements = [];
 
   $config = \Drupal::config('dropshark.settings');
 
@@ -60,8 +60,9 @@ function dropshark_requirements($phase) {
       $requirements['dropshark_register']['title'] = t('DropShark registration');
       $requirements['dropshark_register']['value'] = t('Not registered');
       $requirements['dropshark_register']['severity'] = REQUIREMENT_ERROR;
-      $requirements['dropshark_register']['description'] = t('Information collected from your site cannot be submitted to DropShark. Please @link your site to utilize DropShark.', array('@link' => $link));
-    } else {
+      $requirements['dropshark_register']['description'] = t('Information collected from your site cannot be submitted to DropShark. Please @link your site to utilize DropShark.', ['@link' => $link]);
+    }
+    else {
       /** @var \Drupal\dropshark\Request\Request $r */
       $r = \Drupal::getContainer()->get('dropshark.request');
       $result = $r->checkToken();
@@ -71,8 +72,9 @@ function dropshark_requirements($phase) {
         $requirements['dropshark_connection']['title'] = t('DropShark connection');
         $requirements['dropshark_connection']['value'] = t('Unable to connect');
         $requirements['dropshark_connection']['severity'] = REQUIREMENT_ERROR;
-        $requirements['dropshark_connection']['description'] = t('Information collected from your site cannot be submitted to DropShark. Please check your DropShark !link.', array('!link' => $link));
-      } else {
+        $requirements['dropshark_connection']['description'] = t('Information collected from your site cannot be submitted to DropShark. Please check your DropShark !link.', ['!link' => $link]);
+      }
+      else {
         $requirements['dropshark']['title'] = t('DropShark');
         $requirements['dropshark']['value'] = t('OK');
         $requirements['dropshark']['severity'] = REQUIREMENT_OK;
@@ -83,9 +85,10 @@ function dropshark_requirements($phase) {
     /** @var \Linfo\Linfo|false $linfo */
     $linfo = \Drupal::service('dropshark.linfo_factory')->createInstance();
     if ($linfo) {
-      $requirements['dropshark_linfo']['value'] = t('Installed: %version', array('%version' => $linfo->getVersion()));
+      $requirements['dropshark_linfo']['value'] = t('Installed: %version', ['%version' => $linfo->getVersion()]);
       $requirements['dropshark_linfo']['severity'] = REQUIREMENT_OK;
-    } else {
+    }
+    else {
       $requirements['dropshark_linfo']['value'] = t('Not found');
       $requirements['dropshark_linfo']['severity'] = REQUIREMENT_WARNING;
       $requirements['dropshark_linfo']['description'] = t('The DropShark module needs the Linfo library in order to collect system data.');

@@ -5,11 +5,6 @@
  * DropShark module code.
  */
 
-define('DROPSHARK_HOST_DEFAULT', 'https://data.dropshark.io');
-define('DROPSHARK_QUEUE_DEFAULT', '\Drupal\dropshark\Queue\DbQueue');
-define('DROPSHARK_REQUEST_DEFAULT', '\Drupal\dropshark\Request\Request');
-define('DROPSHARK_LINFO_AUTOLOADER', 'libraries/linfo/standalone_autoload.php');
-
 /**
  * Registers dropshark_finalize_request() as a shutdown function.
  */

@@ -12,4 +12,5 @@ dropshark.collect:
     _controller: '\Drupal\dropshark\Controller\CollectionController::collect'
     _title: 'DropShark'
   requirements:
+    # Access handled in controller.
     _access: 'TRUE'

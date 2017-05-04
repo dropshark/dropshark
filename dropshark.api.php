@@ -6,23 +6,11 @@
  */
 
 /**
- * Define DropSharkCollector classes provided by the module.
- *
- * @return array
- *   An array of collector definitions, keyed by machine name.
- */
-function hook_dropshark_collector_info() {
-
-}
-
-/**
- * Alter DropSharkCollector class definitions.
+ * Alter DropShark Collector plugin definitions.
  *
  * @param array $collectors
- *   An array of collector definitions, keyed by machine name.
- *
- * @see hook_dropshark_collector_info()
+ *   An array of DropShark Collector plugin definitions.
  */
-function hook_dropshark_collector_info_alter(&$collectors) {
+function hook_dropshark_collector_info_alter(array &$collectors) {
 
 }
