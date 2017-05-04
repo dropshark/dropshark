@@ -19,7 +19,7 @@ class DiskCollector extends LinfoCollector {
   /**
    * {@inheritdoc}
    */
-  public function collect($data = array()) {
+  public function collect(array $data = []) {
     $data = $this->defaultResult();
 
     if (!$this->checkLinfo($data)) {
@@ -53,13 +53,14 @@ class DiskCollector extends LinfoCollector {
   public function getData() {
     static $data = NULL;
     if ($data === NULL) {
-      $data = array();
+      $data = [];
       foreach ($this->parser->getMounts() as $mount) {
         $data[$mount['mount']] = $mount;
       }
     }
     return $data;
   }
+
   /**
    * Lists disks on the machine.
    *

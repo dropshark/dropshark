@@ -24,11 +24,11 @@ class UpdateStatusCollector extends CollectorBase implements ModuleHandlerAwareI
   /**
    * {@inheritdoc}
    */
-  public function collect($data = array()) {
+  public function collect(array $data = []) {
     $data = $this->defaultResult();
 
     try {
-      $update = $this->moduleHandler->getModule('update');
+      $this->moduleHandler->getModule('update');
     }
     catch (\InvalidArgumentException $e) {
       $data['code'] = 'update_not_enabled';
@@ -36,14 +36,14 @@ class UpdateStatusCollector extends CollectorBase implements ModuleHandlerAwareI
       return;
     }
 
-    $data['projects'] = array();
-    $data['status'] = array();
+    $data['projects'] = [];
+    $data['status'] = [];
 
     if ($available = update_get_available(TRUE)) {
       module_load_include('inc', 'update', 'update.compare');
       $info = update_calculate_project_data($available);
 
-      $status_map = array(
+      $status_map = [
         1 => 'not_secure',
         2 => 'revoked',
         3 => 'not_supported',
@@ -53,7 +53,7 @@ class UpdateStatusCollector extends CollectorBase implements ModuleHandlerAwareI
         -2 => 'unknown',
         -3 => 'not_fetched',
         -4 => 'fetch_pending',
-      );
+      ];
 
       foreach ($info as $project) {
         $status = $project['status'];

@@ -19,7 +19,7 @@ class LoadCollector extends LinfoCollector {
   /**
    * {@inheritdoc}
    */
-  public function collect($data = array()) {
+  public function collect(array $data = []) {
     $data = $this->defaultResult();
 
     if (!$this->checkLinfo($data)) {

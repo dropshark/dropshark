@@ -20,7 +20,7 @@ class ApcCollector extends CollectorBase {
   /**
    * {@inheritdoc}
    */
-  public function collect($data = array()) {
+  public function collect(array $data = []) {
     $data = $this->defaultResult();
     if (!function_exists('apc_cache_info')) {
       $data['code'] = 'no_apc';

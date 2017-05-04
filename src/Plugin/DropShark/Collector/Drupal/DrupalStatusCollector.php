@@ -24,8 +24,7 @@ class DrupalStatusCollector extends CollectorBase implements ModuleHandlerAwareI
   /**
    * {@inheritdoc}
    */
-  public function collect($data = array()) {
-
+  public function collect(array $data = []) {
     $data = $this->defaultResult();
 
     // Load .install files
