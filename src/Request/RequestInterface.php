@@ -29,8 +29,14 @@ interface RequestInterface {
   public function getToken($email, $password, $siteId);
 
   /**
+   * Posts collected data to the backend.
+   *
+   * @param array $data
+   *   Data to send to the backend.
+   *
    * @return object
+   *   The response data.
    */
-  public function postData($data);
+  public function postData(array $data);
 
 }

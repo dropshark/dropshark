@@ -35,12 +35,10 @@ class Request implements RequestInterface {
   /**
    * DropSharkRequest constructor.
    *
-   * @param ConfigFactoryInterface $configFactory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Configuration options.
    * @param \GuzzleHttp\ClientInterface $httpClient
    *   HTTP client.
-   * @param \Drupal\dropshark\Fingerprint\FingerprintInterface
-   *   The fingerprint service.
    */
   public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient) {
     $config = $configFactory->get('dropshark.settings');
@@ -98,7 +96,7 @@ class Request implements RequestInterface {
   /**
    * {@inheritdoc}
    */
-  public function postData($data) {
+  public function postData(array $data) {
     $options = $this->requestOptions($data);
     $result = new \stdClass();
 
