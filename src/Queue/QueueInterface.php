@@ -21,6 +21,7 @@ interface QueueInterface {
    * Indicates if the queue has deferred collectors.
    *
    * @return bool
+   *   Indicates if the queue has deferred collectors.
    */
   public function hasDeferred();
 
@@ -32,6 +33,7 @@ interface QueueInterface {
    * immediately or some other process initiates a transmission.
    *
    * @return bool
+   *   Indicates if the queue should be immediately transmitted.
    */
   public function needsImmediateTransmit();
 

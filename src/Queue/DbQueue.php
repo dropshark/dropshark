@@ -89,7 +89,7 @@ class DbQueue implements QueueInterface {
   /**
    * Clear expired locks from queue items.
    *
-   * @param $timestamp
+   * @param int $timestamp
    *   The timestamp for which to check lock expiration, defaults to current
    *   time minus the lock expiration configuration.
    */
@@ -98,13 +98,14 @@ class DbQueue implements QueueInterface {
       $timestamp = $this->timestamp() - $this->config->get('queue.lock_max');
     }
     $query = 'UPDATE {dropshark_queue} SET lock_id = NULL , lock_time = NULL WHERE lock_time < ?';
-    $this->db->query($query, array($timestamp));
+    $this->db->query($query, [$timestamp]);
   }
 
   /**
    * Gets items from persistent storage.
    *
    * @return array
+   *   Items obtained from persistent storage.
    */
   protected function getItems() {
     // Lock the next X items.
@@ -112,12 +113,12 @@ class DbQueue implements QueueInterface {
 
     $query = 'SELECT data FROM {dropshark_queue} WHERE lock_id = ? ORDER BY created';
 
-    $data = array();
-    foreach ($this->db->query($query, array($this->currentLock)) as $item) {
-      $data[] = array(
+    $data = [];
+    foreach ($this->db->query($query, [$this->currentLock]) as $item) {
+      $data[] = [
         'type' => 'persistent',
         'data' => json_decode($item->data),
-      );
+      ];
     }
 
     return $data;
@@ -141,7 +142,7 @@ class DbQueue implements QueueInterface {
     $key = md5(__METHOD__ . microtime() . mt_rand(0, 999999));
 
     $query = 'UPDATE {dropshark_queue} SET lock_id = ? , lock_time = ? WHERE lock_id IS NULL ORDER BY CREATED';
-    $this->db->query($query, array($key, $this->timestamp()));
+    $this->db->query($query, [$key, $this->timestamp()]);
 
     return $key;
   }
@@ -161,8 +162,8 @@ class DbQueue implements QueueInterface {
     foreach ($this->data as $item) {
       $this->db->insert('dropshark_queue')
         ->fields([
-        'created' => $item['created'],
-        'data' => json_encode($item['data']),
+          'created' => $item['created'],
+          'data' => json_encode($item['data']),
         ])->execute();
     }
     $this->data = [];
@@ -187,7 +188,7 @@ class DbQueue implements QueueInterface {
     }
 
     $query = 'DELETE FROM {dropshark_queue} WHERE lock_id = ?';
-    $this->db->query($query, array($this->currentLock));
+    $this->db->query($query, [$this->currentLock]);
     $this->currentLock = NULL;
   }
 
@@ -224,7 +225,7 @@ class DbQueue implements QueueInterface {
 
     // Get persisted items, merge with static items.
     $items = array_merge($this->getItems(), $this->data);
-    $data = array();
+    $data = [];
     foreach ($items as $item) {
       $data[] = $item['data'];
     }
@@ -239,10 +240,10 @@ class DbQueue implements QueueInterface {
     else {
       // On success clear data from queue.
       $this->removeItems();
-      $this->data = array();
+      $this->data = [];
     }
 
-    $this->deferred = array();
+    $this->deferred = [];
     $this->immediateTransmit = FALSE;
   }
 
@@ -253,8 +254,9 @@ class DbQueue implements QueueInterface {
    *   Data to be transmitted.
    *
    * @return object
+   *   The response object.
    */
-  protected function transmitItems($items) {
+  protected function transmitItems(array $items) {
     $params['data'] = json_encode($items);
     $params['site_id'] = $this->config->get('site_id');
     return $this->request->postData($params);
@@ -269,7 +271,7 @@ class DbQueue implements QueueInterface {
     }
 
     $query = 'UPDATE {dropshark_queue} SET lock_id = NULL WHERE lock_id = ?';
-    $this->db->query($query, array($this->currentLock));
+    $this->db->query($query, [$this->currentLock]);
     $this->currentLock = NULL;
   }
 
