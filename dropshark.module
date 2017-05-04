@@ -146,16 +146,18 @@ function dropshark_get_collector_info($reset = FALSE) {
  *   The collector's ID.
  * @param \DropSharkQueueInterface $queue
  *   A queue handling object.
+ * @param string $site_id
+ *   The site ID.
  *
  * @return \DropSharkCollectorInterface
  *   The collector.
  */
-function dropshark_get_collector($collector_id, \DropSharkQueueInterface $queue) {
+function dropshark_get_collector($collector_id, \DropSharkQueueInterface $queue, $site_id) {
   $collectors = dropshark_get_collector_info();
 
   if (!empty($collectors[$collector_id]['class'])) {
     $class = $collectors[$collector_id]['class'];
-    return new $class($collectors[$collector_id], $queue);
+    return new $class($collectors[$collector_id], $queue, $site_id);
   }
 }
 
@@ -217,9 +219,10 @@ function dropshark_dropshark_collector_info() {
  */
 function dropshark_handle_event($event, array $data = array(), $immediate = FALSE) {
   $queue = dropshark_get_queue();
+  $site_id = variable_get('dropshark_site_id');
 
   foreach (dropshark_get_collector_info() as $name => $info) {
-    $collector = dropshark_get_collector($name, $queue);
+    $collector = dropshark_get_collector($name, $queue, $site_id);
     $collector->collect($event, $data);
   }
 

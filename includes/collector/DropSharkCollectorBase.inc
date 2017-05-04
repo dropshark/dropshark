@@ -27,6 +27,13 @@ abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
   protected $queue;
 
   /**
+   * The site ID.
+   *
+   * @var string
+   */
+  protected $siteId;
+
+  /**
    * A machine name indicating the collector's type.
    *
    * @var string|null
@@ -40,10 +47,13 @@ abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
    *   Collector definition obtained from hook_dropshark_collector_info().
    * @param \DropSharkQueueInterface $queue
    *   The queue used for handling collected data.
+   * @param string $siteId
+   *   The site ID.
    */
-  public function __construct(array $definition, DropSharkQueueInterface $queue) {
+  public function __construct(array $definition, DropSharkQueueInterface $queue, $siteId) {
     $this->definition = $definition;
     $this->queue = $queue;
+    $this->siteId = $siteId;
   }
 
   /**
@@ -113,6 +123,7 @@ abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
       $type = $this->type;
     }
 
+    $result['site_id'] = $this->siteId;
     $result['type'] = $type;
     $result['server'] = $this->getServer();
     $result['ds_collector_id'] = "{$result['type']}|{$result['server']}";

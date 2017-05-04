@@ -25,8 +25,8 @@ abstract class DropSharkLinfoCollector extends DropSharkCollectorBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct($definition, $queue) {
-    parent::__construct($definition, $queue);
+  public function __construct($definition, $queue, $siteId) {
+    parent::__construct($definition, $queue, $siteId);
 
     if ($this->linfo = dropshark_get_linfo()) {
       $this->parser = $this->linfo->getParser();
