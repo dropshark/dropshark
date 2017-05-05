@@ -3,13 +3,42 @@
 namespace Drupal\dropshark\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\dropshark\Collector\CollectorManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class CollectionController.
  */
 class CollectionController extends ControllerBase {
+
+  /**
+   * DropShark collector manager.
+   *
+   * @var \Drupal\dropshark\Collector\CollectorManager
+   */
+  protected $collectorManager;
+
+  /**
+   * CollectionController constructor.
+   *
+   * @param \Drupal\dropshark\Collector\CollectorManager $collectorManager
+   *   Collector manager.
+   */
+  public function __construct(CollectorManager $collectorManager) {
+    $this->collectorManager = $collectorManager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('plugin.manager.dropshark_collector')
+    );
+  }
 
   /**
    * Performs data collection.
@@ -21,32 +50,23 @@ class CollectionController extends ControllerBase {
    *   The response.
    */
   public function collect(Request $request) {
-    $response = new JsonResponse();
-
     $config = $this->config('dropshark.settings');
 
     $site_id = $config->get('site_id');
-    $token = $config->get('site_id');
+    $token = $config->get('site_token');
 
     if (!$site_id || !$token) {
-      $response->setStatusCode(404);
-      $response->setData([
-        'error' => 'DropShark not configured',
-        'timestamp' => date('c'),
-      ]);
-      return $response;
+      throw new NotFoundHttpException();
     }
 
     if ($site_id != $request->query->get('key')) {
-      $response->setStatusCode(404);
-      $response->setData([
-        'error' => 'invalid key',
-        'timestamp' => date('c'),
-      ]);
-      return $response;
+      throw new NotFoundHttpException();
     }
 
     // Do some collecting.
+    $this->collectorManager->collect(['all']);
+
+    $response = new JsonResponse();
     $response->setData([
       'code' => 200,
       'result' => 'Data collection complete.',
