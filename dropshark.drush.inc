@@ -5,37 +5,40 @@
  * DropShark drush integration.
  */
 
+use Drupal\Component\Utility\UrlHelper;
+use GuzzleHttp\Exception\ClientException;
+
 /**
  * Implements hook_drush_command().
  */
 function dropshark_drush_command() {
-  $commands['dropshark-collect'] = array(
+  $commands['dropshark-collect'] = [
     'description' => 'Collect and send data to the DropShark service.',
-    'options' => array(
-      'debug' => 'Provide debug messaging.',
+    'arguments' => [
       'url' => 'The base URL of the site.',
-    ),
-    'aliases' => array('drpshrk'),
-  );
+    ],
+    'required-arguments' => TRUE,
+    'options' => [
+      'debug' => 'Provide debug messaging.',
+    ],
+    'aliases' => ['drpshrk'],
+  ];
 
   return $commands;
 }
 
 /**
  * Drush worker callback for collecting and sending data.
+ *
+ * @param string $url
+ *   The base URL of the site.
+ *
+ * @return bool
+ *   Indicates if the command successfully completed.
  */
-function drush_dropshark_collect() {
-  if (!$url = drush_get_option('url', FALSE)) {
-    $url = url('', array('absolute' => TRUE));
-    if ($url == 'http://default/') {
-      drush_log(dt('Unable to determine site URL.'), 'error');
-      return;
-    }
-  }
-
-  if (!valid_url($url)) {
-    drush_log(dt('Invalid site URL.'), 'error');
-    return;
+function drush_dropshark_collect($url) {
+  if (!UrlHelper::isValid($url, TRUE)) {
+    return drush_set_error(dt('Invalid site URL.'));
   }
 
   $debug = drush_get_option('debug', FALSE);
@@ -43,29 +46,53 @@ function drush_dropshark_collect() {
     drush_log(dt('Attempting HTTP request to initiate data collection.'), 'ok');
   }
 
-  if (!$key = variable_get('dropshark_site_id')) {
-    drush_log(dt('DropShark not properly registered.'), 'error');
-    return;
+  $config = \Drupal::config('dropshark.settings');
+  $key = $config->get('site_id');
+  $token = $config->get('site_token');
+
+  // Need site_id and site_token.
+  if (!$key || !$token) {
+    return drush_set_error(dt('DropShark not properly registered.'));
   }
 
-  $params['key'] = $key;
-  $params['t'] = time();
-  $url = rtrim($url, '/') . '/dropshark/collect?' . drupal_http_build_query($params);
+  /** @var \GuzzleHttp\ClientInterface $httpClient */
+  $httpClient = \Drupal::service('http_client');
+  $url = rtrim($url, '/') . '/dropshark/collect';
+  $options['query']['key'] = $key;
+  $options['query']['t'] = time();
 
-  $result = drupal_http_request($url);
-  if ($debug) {
-    drush_log(print_r($result, TRUE), 'ok');
+  $e = $response = NULL;
+  try {
+    $response = $httpClient->request('GET', $url, $options);
   }
-  if ($result->code != 200) {
-    drush_log(dt('HTTP request failed !code.', array('!code' => $result->code)), 'error');
-    return;
+  catch (ClientException $e) {
+    if ($e->hasResponse()) {
+      $response = $e->getResponse();
+    }
+  }
+  catch (\Exception $e) {
+    // No op.
+  }
+
+  // Provide the response if debugging is set.
+  if ($debug && $response) {
+    drush_log(print_r($response, TRUE), 'ok');
+  }
+
+  // If there was an exception, error-out.
+  if ($e) {
+    if ($response) {
+      $params = ['!code' => $response->getStatusCode()];
+      return drush_set_error(dt('HTTP request failed !code.', $params));
+    }
+    return drush_set_error(dt('Error while performing HTTP request.'));
   }
 
   if ($debug) {
     drush_log(dt('Sending data to DropShark.'), 'ok');
   }
-
-  $queue = dropshark_get_queue();
+  /** @var Drupal\dropshark\Queue\QueueInterface $queue */
+  $queue = \Drupal::service('dropshark.queue');
   $queue->transmit();
 
   drush_log(dt('Collection complete.'), 'ok');
