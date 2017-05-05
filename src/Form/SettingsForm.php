@@ -17,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SettingsForm extends ConfigFormBase {
 
   /**
-   * DropShark queue handling service.
+   * DropShark collector manager.
    *
    * @var \Drupal\dropshark\Collector\CollectorManager
    */
