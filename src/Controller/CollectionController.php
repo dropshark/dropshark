@@ -23,9 +23,21 @@ class CollectionController extends ControllerBase {
   public function collect(Request $request) {
     $response = new JsonResponse();
 
-    $key = $this->state()->get('system.cron_key');
+    $config = $this->config('dropshark.settings');
 
-    if ($key != $request->query->get('key')) {
+    $site_id = $config->get('site_id');
+    $token = $config->get('site_id');
+
+    if (!$site_id || !$token) {
+      $response->setStatusCode(404);
+      $response->setData([
+        'error' => 'DropShark not configured',
+        'timestamp' => date('c'),
+      ]);
+      return $response;
+    }
+
+    if ($site_id != $request->query->get('key')) {
       $response->setStatusCode(404);
       $response->setData([
         'error' => 'invalid key',
