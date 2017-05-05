@@ -17,13 +17,6 @@ abstract class CollectorBase extends PluginBase implements CollectorInterface {
   use QueueAwareTrait;
 
   /**
-   * DropShark queue handler service.
-   *
-   * @var \Drupal\dropshark\Queue\QueueInterface
-   */
-  protected $queue;
-
-  /**
    * A default value to be used for a collector's result.
    *
    * This contains the properties needed to report a valid result. Collectors
