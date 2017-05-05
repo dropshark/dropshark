@@ -80,10 +80,6 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
     if ($immediate) {
       $this->queue->setImmediateTransmit();
     }
-
-    if ($this->queue->needsImmediateTransmit() || $this->queue->hasDeferred()) {
-      dropshark_set_shutdown_function();
-    }
   }
 
 }
