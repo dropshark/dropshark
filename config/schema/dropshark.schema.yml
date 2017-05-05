@@ -24,3 +24,6 @@ dropshark.settings:
         max_process:
           type: integer
           label: 'Maximum number of items to process in a single run'
+    linfo_path:
+      type: string
+      label: 'Location of the Linfo autoloader file'
