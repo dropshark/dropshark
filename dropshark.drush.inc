@@ -91,8 +91,9 @@ function drush_dropshark_collect($url) {
   if ($debug) {
     drush_log(dt('Sending data to DropShark.'), 'ok');
   }
-  /** @var Drupal\dropshark\Queue\QueueInterface $queue */
+  /** @var \Drupal\dropshark\Queue\QueueInterface $queue */
   $queue = \Drupal::service('dropshark.queue');
+  sleep(2);
   $queue->transmit();
 
   drush_log(dt('Collection complete.'), 'ok');

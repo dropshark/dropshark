@@ -224,8 +224,6 @@ class DbQueue implements QueueInterface {
     // Clear any old stuff that didn't finish processing.
     $this->clearLocks();
 
-    $this->processDeferred();
-
     // Get persisted items, merge with static items.
     $items = array_merge($this->getItems(), $this->data);
     $data = [];
