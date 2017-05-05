@@ -84,7 +84,7 @@ function dropshark_requirements($phase) {
       }
       else {
         $requirements['dropshark']['title'] = $t('DropShark');
-        $requirements['dropshark']['value'] = $t('OK');
+        $requirements['dropshark']['value'] = $t('Your site is successfully communicating with DropShark.');
         $requirements['dropshark']['severity'] = REQUIREMENT_OK;
       }
     }
