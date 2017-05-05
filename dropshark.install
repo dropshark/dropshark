@@ -54,6 +54,7 @@ function dropshark_uninstall() {
   variable_del('dropshark_queue_max_process');
   variable_del('dropshark_request_class');
   variable_del('dropshark_site_id');
+  variable_del('dropshark_site_token');
 }
 
 /**
