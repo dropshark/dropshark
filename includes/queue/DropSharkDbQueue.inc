@@ -24,7 +24,7 @@ class DropSharkDbQueue implements DropSharkQueueInterface {
    *
    * @var \DropSharkCollectorInterface[]
    */
-  protected $deferred;
+  protected $deferred = array();
 
   /**
    * Indicates that the queue should transmit during the current HTTP request.
@@ -63,6 +63,7 @@ class DropSharkDbQueue implements DropSharkQueueInterface {
     $data['data'] = $item;
     $data['created'] = $this->timestamp();
     $this->data[] = $data;
+    dropshark_set_shutdown_function();
   }
 
   /**
@@ -201,6 +202,8 @@ class DropSharkDbQueue implements DropSharkQueueInterface {
   public function transmit() {
     // Clear any old stuff that didn't finish processing.
     $this->clearLocks();
+
+    $this->processDeferred();
 
     // Get persisted items, merge with static items.
     $items = array_merge($this->getItems(), $this->data);

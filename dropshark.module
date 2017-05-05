@@ -229,10 +229,6 @@ function dropshark_handle_event($event, array $data = array(), $immediate = FALS
   if ($immediate) {
     $queue->setImmediateTransmit();
   }
-
-  if ($queue->needsImmediateTransmit() || $queue->hasDeferred()) {
-    dropshark_set_shutdown_function();
-  }
 }
 
 /**
