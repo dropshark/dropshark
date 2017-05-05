@@ -42,7 +42,7 @@ function drush_dropshark_collect() {
   }
 
   $key = variable_get('dropshark_site_id');
-  $token = variable_get('dropshark_site_id');
+  $token = variable_get('dropshark_site_token');
 
   // Need site_id and site_token.
   if (!$key || !$token) {
