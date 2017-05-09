@@ -4,7 +4,7 @@ namespace Drupal\dropshark\Collector;
 
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\dropshark\Queue\QueueAwareTrait;
-use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class CollectorManager.
@@ -16,10 +16,10 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
   /**
    * Constructs a DropSharkCollectorManager object.
    *
-   * @param \Symfony\Component\DependencyInjection\IntrospectableContainerInterface $container
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    *   The service container.
    */
-  public function __construct(IntrospectableContainerInterface $container) {
+  public function __construct(ContainerInterface $container) {
     /** @var \Traversable $namespaces */
     $namespaces = $container->get('container.namespaces');
 
