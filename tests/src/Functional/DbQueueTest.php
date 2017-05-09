@@ -4,6 +4,7 @@ namespace Drupal\Tests\dropshark\Functional;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\State\StateInterface;
 use Drupal\dropshark\Queue\DbQueue;
 use Drupal\dropshark\Request\RequestInterface;
 use Drupal\Tests\BrowserTestBase;
@@ -36,12 +37,14 @@ class DbQueueTest extends BrowserTestBase {
     $request->postData(Argument::any())->willReturn($response);
 
     $config = $this->prophesize(ImmutableConfig::class);
-    $config->get('site_id')->willReturn($siteId);
     $config->get('queue.lock_max')->willReturn(300);
     $configFactory = $this->prophesize(ConfigFactoryInterface::class);
     $configFactory->get('dropshark.settings')->willReturn($config->reveal());
 
-    $q = new DbQueue($db, $request->reveal(), $configFactory->reveal());
+    $state = $this->prophesize(StateInterface::class);
+    $state->get('dropshark.site_id')->willReturn($siteId);
+
+    $q = new DbQueue($db, $request->reveal(), $configFactory->reveal(), $state->reveal());
 
     $countQuery = 'SELECT COUNT(*) FROM {dropshark_queue}';
     $lockQuery = 'UPDATE {dropshark_queue} SET lock_id = ? , lock_time = ? LIMIT 1';

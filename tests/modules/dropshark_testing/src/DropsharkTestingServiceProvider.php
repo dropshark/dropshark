@@ -21,7 +21,7 @@ class DropsharkTestingServiceProvider extends ServiceProviderBase {
     // mimic responses from the DropShark backend.
     $container->getDefinition('dropshark.request')
       ->setClass('Drupal\dropshark_testing\TestRequest')
-      ->setArguments([new Reference('config.factory')]);
+      ->setArguments([new Reference('state')]);
   }
 
 }

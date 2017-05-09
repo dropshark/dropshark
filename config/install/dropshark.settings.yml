@@ -1,5 +1,3 @@
-site_id: NULL
-site_token: NULL
 host: 'https://data.dropshark.io'
 cron: true
 queue:

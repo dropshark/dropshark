@@ -50,10 +50,8 @@ class CollectionController extends ControllerBase {
    *   The response.
    */
   public function collect(Request $request) {
-    $config = $this->config('dropshark.settings');
-
-    $site_id = $config->get('site_id');
-    $token = $config->get('site_token');
+    $site_id = $this->state()->get('dropshark.site_id');
+    $token = $this->state()->get('dropshark.site_token');
 
     if (!$site_id || !$token) {
       throw new NotFoundHttpException();

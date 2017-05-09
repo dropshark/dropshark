@@ -46,9 +46,9 @@ function drush_dropshark_collect($url) {
     drush_log(dt('Attempting HTTP request to initiate data collection.'), 'ok');
   }
 
-  $config = \Drupal::config('dropshark.settings');
-  $key = $config->get('site_id');
-  $token = $config->get('site_token');
+  $state = \Drupal::state();
+  $key = $state->get('dropshark.site_id');
+  $token = $state->get('dropshark.site_token');
 
   // Need site_id and site_token.
   if (!$key || !$token) {

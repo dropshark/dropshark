@@ -5,11 +5,12 @@ namespace Drupal\dropshark\Collector;
 use Drupal\dropshark\Fingerprint\FingerprintAwareInterface;
 use Drupal\dropshark\Queue\QueueAwareInterface;
 use Drupal\dropshark\Util\ConfigAwareInterface;
+use Drupal\dropshark\Util\StateAwareInterface;
 
 /**
  * Interface CollectorInterface.
  */
-interface CollectorInterface extends ConfigAwareInterface, FingerprintAwareInterface, QueueAwareInterface {
+interface CollectorInterface extends ConfigAwareInterface, FingerprintAwareInterface, QueueAwareInterface, StateAwareInterface {
 
   /**
    * Indicates a successful collection of data.

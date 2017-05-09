@@ -2,12 +2,6 @@ dropshark.settings:
   type: config_object
   label: 'Dropshark settings'
   mapping:
-    site_id:
-      type: string
-      label: 'Site ID'
-    site_token:
-      type: string
-      label: 'Site token'
     host:
       type: string
       label: 'DropShark backend host'

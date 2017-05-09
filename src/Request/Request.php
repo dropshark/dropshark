@@ -3,6 +3,7 @@
 namespace Drupal\dropshark\Request;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\State\StateInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 
@@ -39,12 +40,14 @@ class Request implements RequestInterface {
    *   Configuration options.
    * @param \GuzzleHttp\ClientInterface $httpClient
    *   HTTP client.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient) {
+  public function __construct(ConfigFactoryInterface $configFactory, ClientInterface $httpClient, StateInterface $state) {
     $config = $configFactory->get('dropshark.settings');
     $this->host = $config->get('host');
-    $this->token = $config->get('site_token');
     $this->httpClient = $httpClient;
+    $this->token = $state->get('dropshark.site_token');
   }
 
   /**

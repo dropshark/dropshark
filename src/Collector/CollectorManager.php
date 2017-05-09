@@ -41,6 +41,9 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
     /** @var \Drupal\Core\Config\ConfigFactoryInterface $configFactory */
     $configFactory = $container->get('config.factory');
 
+    /** @var \Drupal\Core\State\StateInterface $state */
+    $state = $container->get('state');
+
     parent::__construct(
       'Plugin/DropShark/Collector',
       $namespaces,
@@ -55,7 +58,8 @@ class CollectorManager extends DefaultPluginManager implements CollectorManagerI
     $this->factory->setConfig($configFactory->get('dropshark.settings'))
       ->setFingerprint($fingerprint)
       ->setModuleHandler($moduleHandler)
-      ->setQueue($queue);
+      ->setQueue($queue)
+      ->setState($state);
 
     if ($linfo = $linfoFactory->createInstance()) {
       $this->factory->setLinfo($linfo);

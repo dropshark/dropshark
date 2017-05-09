@@ -4,6 +4,7 @@ namespace Drupal\dropshark\Queue;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\State\StateInterface;
 use Drupal\dropshark\Collector\CollectorInterface;
 use Drupal\dropshark\Request\RequestInterface;
 
@@ -62,6 +63,13 @@ class DbQueue implements QueueInterface {
   protected $request;
 
   /**
+   * The state service.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected $state;
+
+  /**
    * DbQueue constructor.
    *
    * @param \Drupal\Core\Database\Connection $db
@@ -70,11 +78,14 @@ class DbQueue implements QueueInterface {
    *   Request handler.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   Configuration options.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    */
-  public function __construct(Connection $db, RequestInterface $request, ConfigFactoryInterface $configFactory) {
+  public function __construct(Connection $db, RequestInterface $request, ConfigFactoryInterface $configFactory, StateInterface $state) {
     $this->db = $db;
     $this->request = $request;
     $this->config = $configFactory->get('dropshark.settings');
+    $this->state = $state;
   }
 
   /**
@@ -259,7 +270,7 @@ class DbQueue implements QueueInterface {
    */
   protected function transmitItems(array $items) {
     $params['data'] = json_encode($items);
-    $params['site_id'] = $this->config->get('site_id');
+    $params['site_id'] = $this->state->get('dropshark.site_id');
     return $this->request->postData($params);
   }
 

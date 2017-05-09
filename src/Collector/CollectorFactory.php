@@ -11,6 +11,7 @@ use Drupal\dropshark\Util\LinfoAwareInterface;
 use Drupal\dropshark\Util\LinfoAwareTrait;
 use Drupal\dropshark\Util\ModuleHandlerAwareInterface;
 use Drupal\dropshark\Util\ModuleHandlerAwareTrait;
+use Drupal\dropshark\Util\StateAwareTrait;
 
 /**
  * Class CollectorFactory.
@@ -24,6 +25,7 @@ class CollectorFactory extends DefaultFactory implements ConfigAwareInterface {
   use LinfoAwareTrait;
   use ModuleHandlerAwareTrait;
   use QueueAwareTrait;
+  use StateAwareTrait;
 
   /**
    * {@inheritdoc}
@@ -34,7 +36,8 @@ class CollectorFactory extends DefaultFactory implements ConfigAwareInterface {
 
     $plugin->setConfig($this->config)
       ->setFingerprint($this->fingerprint)
-      ->setQueue($this->queue);
+      ->setQueue($this->queue)
+      ->setState($this->state);
 
     if ($plugin instanceof LinfoAwareInterface) {
       $plugin->setLinfo($this->linfo);

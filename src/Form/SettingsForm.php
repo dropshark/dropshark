@@ -2,10 +2,10 @@
 
 namespace Drupal\dropshark\Form;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\State\StateInterface;
 use Drupal\Core\Url;
 use Drupal\dropshark\Collector\CollectorManager;
 use Drupal\dropshark\Request\RequestInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Class SettingsForm.
  */
-class SettingsForm extends ConfigFormBase {
+class SettingsForm extends FormBase {
 
   /**
    * DropShark collector manager.
@@ -31,17 +31,24 @@ class SettingsForm extends ConfigFormBase {
   protected $request;
 
   /**
+   * The state service.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected $state;
+
+  /**
    * Constructs the settings form.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   *   The factory for configuration objects.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    * @param \Drupal\dropshark\Request\RequestInterface $request
    *   Request handler.
    * @param \Drupal\dropshark\Collector\CollectorManager $collectorManager
    *   Collector manager.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, RequestInterface $request, CollectorManager $collectorManager) {
-    parent::__construct($configFactory);
+  public function __construct(StateInterface $state, RequestInterface $request, CollectorManager $collectorManager) {
+    $this->state = $state;
     $this->request = $request;
     $this->collectorManager = $collectorManager;
   }
@@ -51,7 +58,7 @@ class SettingsForm extends ConfigFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('config.factory'),
+      $container->get('state'),
       $container->get('dropshark.request'),
       $container->get('plugin.manager.dropshark_collector')
     );
@@ -61,9 +68,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $config = $this->config('dropshark.settings');
-
-    if ($config->get('site_token')) {
+    if ($this->state->get('dropshark.site_token')) {
       $form = $this->statusForm($form);
     }
     else {
@@ -71,13 +76,6 @@ class SettingsForm extends ConfigFormBase {
     }
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getEditableConfigNames() {
-    return ['dropshark.settings'];
   }
 
   /**
@@ -97,8 +95,6 @@ class SettingsForm extends ConfigFormBase {
    *   The form structure.
    */
   protected function registrationForm(array $form) {
-    $config = $this->config('dropshark.settings');
-
     $form['instructions']['#markup'] = $this->t("In order to register your site with the DropShark service, you'll need to enter your credentials and site identifier.");
     $form['instructions']['#prefix'] = '<p>';
     $form['instructions']['#suffix'] = '</p>';
@@ -121,7 +117,7 @@ class SettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Site ID'),
       '#description' => $this->t('Find your site identifier on your DropShark dashboard.'),
-      '#default_value' => $config->get('site_id'),
+      '#default_value' => $this->state->get('drop_shark.site_id'),
       '#required' => TRUE,
     ];
 
@@ -164,10 +160,10 @@ class SettingsForm extends ConfigFormBase {
    * Submit handler for registration form.
    */
   public function registrationFormSubmit(array &$form, FormStateInterface $form_state) {
-    $config = $this->config('dropshark.settings');
-    $config->set('site_token', $form_state->get('site_token'));
-    $config->set('site_id', $form_state->get('site_id'));
-    $config->save();
+    $this->state->setMultiple([
+      'dropshark.site_id' => $form_state->get('site_id'),
+      'dropshark.site_token' => $form_state->get('site_token'),
+    ]);
   }
 
   /**
@@ -180,8 +176,6 @@ class SettingsForm extends ConfigFormBase {
    *   The form structure.
    */
   protected function statusForm(array $form) {
-    $config = $this->config('dropshark.settings');
-
     $params['@link'] = Link::fromTextAndUrl('DropShark', Url::fromUri('http://app.dropshark.io'))->toString();
     $form['instructions']['#markup'] = $this->t('Your site is registered and will send data to DropShark. Log in to @link to analyze your data.', $params);
     $form['instructions']['#prefix'] = '<p>';
@@ -190,7 +184,7 @@ class SettingsForm extends ConfigFormBase {
     $form['status'] = [
       '#type' => 'item',
       '#title' => $this->t('Site ID'),
-      '#plain_text' => $config->get('site_id'),
+      '#plain_text' => $this->state->get('dropshark.site_id'),
     ];
 
     $form['check'] = [
@@ -262,9 +256,7 @@ class SettingsForm extends ConfigFormBase {
    * Resets the site token.
    */
   public function statusFormResetSubmit() {
-    $config = $this->config('dropshark.settings');
-    $config->set('site_token', NULL);
-    $config->save();
+    $this->state->delete('dropshark.site_token');
   }
 
   /**

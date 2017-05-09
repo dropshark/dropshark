@@ -7,10 +7,10 @@ services:
     arguments: ['@config.factory']
   dropshark.queue:
     class: Drupal\dropshark\Queue\DbQueue
-    arguments: ['@database', '@dropshark.request', '@config.factory']
+    arguments: ['@database', '@dropshark.request', '@config.factory', '@state']
   dropshark.request:
     class: Drupal\dropshark\Request\Request
-    arguments: ['@config.factory', '@http_client']
+    arguments: ['@config.factory', '@http_client', '@state']
   plugin.manager.dropshark_collector:
     class: Drupal\dropshark\Collector\CollectorManager
     arguments: ['@service_container']

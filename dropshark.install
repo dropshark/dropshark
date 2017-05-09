@@ -52,10 +52,8 @@ function dropshark_schema() {
 function dropshark_requirements($phase) {
   $requirements = [];
 
-  $config = \Drupal::config('dropshark.settings');
-
   if ($phase == 'runtime') {
-    if (!$config->get('site_token')) {
+    if (!\Drupal::state()->get('dropshark.site_token')) {
       $requirements['dropshark_register']['title'] = t('DropShark registration');
       $requirements['dropshark_register']['value'] = t('Not registered');
       $requirements['dropshark_register']['severity'] = REQUIREMENT_ERROR;

@@ -67,9 +67,7 @@ class AdminTestCase extends BrowserTestBase {
     $this->assertSession()->pageTextNotContains('Unable to verify the site connection');
 
     // Use a garbage token, test connection (expected to fail).
-    $config = \Drupal::configFactory()->getEditable('dropshark.settings');
-    $config->set('site_token', 'invalid_token');
-    $config->save();
+    \Drupal::state()->set('dropshark.site_token', 'invalid_token');
     $this->submitForm($edit, 'Check');
     $this->assertSession()->pageTextContains('Unable to verify the site connection');
     $this->assertSession()->pageTextNotContains('Connection successfully verified');
@@ -83,8 +81,6 @@ class AdminTestCase extends BrowserTestBase {
    * Tests requirements set on status report page.
    */
   public function testRequirements() {
-    $config = \Drupal::configFactory()->getEditable('dropshark.settings');
-
     $regText = 'Information collected from your site cannot be submitted to DropShark. Please register your site to utilize DropShark.';
     $connText = 'Information collected from your site cannot be submitted to DropShark. Please check your DropShark configuration.';
     $okText = 'Your site is successfully communicating with DropShark.';
@@ -97,16 +93,14 @@ class AdminTestCase extends BrowserTestBase {
     $this->assertSession()->pageTextNotContains($okText);
 
     // Registered, but unable to connect.
-    $config->set('site_token', 'invalid_token');
-    $config->save();
+    \Drupal::state()->set('dropshark.site_token', 'invalid_token');
     $this->drupalGet('admin/reports/status');
     $this->assertSession()->pageTextNotContains($regText);
     $this->assertSession()->pageTextContains($connText);
     $this->assertSession()->pageTextNotContains($okText);
 
     // Successful connection.
-    $config->set('site_token', 'valid_token');
-    $config->save();
+    \Drupal::state()->set('dropshark.site_token', 'valid_token');
     $this->drupalGet('admin/reports/status');
     $this->assertSession()->pageTextNotContains($regText);
     $this->assertSession()->pageTextNotContains($connText);

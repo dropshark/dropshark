@@ -6,6 +6,7 @@ use Drupal\Core\Plugin\PluginBase;
 use Drupal\dropshark\Fingerprint\FingerprintAwareTrait;
 use Drupal\dropshark\Queue\QueueAwareTrait;
 use Drupal\dropshark\Util\ConfigAwareTrait;
+use Drupal\dropshark\Util\StateAwareTrait;
 
 /**
  * Class CollectorBase.
@@ -15,6 +16,7 @@ abstract class CollectorBase extends PluginBase implements CollectorInterface {
   use ConfigAwareTrait;
   use FingerprintAwareTrait;
   use QueueAwareTrait;
+  use StateAwareTrait;
 
   /**
    * A default value to be used for a collector's result.
@@ -38,7 +40,7 @@ abstract class CollectorBase extends PluginBase implements CollectorInterface {
       $type = $this->getPluginId();
     }
 
-    $result['site_id'] = $this->config->get('site_id');
+    $result['site_id'] = $this->state->get('dropshark.site_id');
     $result['type'] = $type;
     $result['server'] = $this->getServer();
     $result['ds_collector_id'] = "{$result['type']}|{$result['server']}";

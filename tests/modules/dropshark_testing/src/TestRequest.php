@@ -2,7 +2,7 @@
 
 namespace Drupal\dropshark_testing;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\dropshark\Request\RequestInterface;
 
 /**
@@ -11,20 +11,20 @@ use Drupal\dropshark\Request\RequestInterface;
 class TestRequest implements RequestInterface {
 
   /**
-   * DropShark configuration.
+   * The state service.
    *
-   * @var \Drupal\Core\Config\ImmutableConfig
+   * @var \Drupal\Core\State\StateInterface
    */
-  protected $config;
+  protected $state;
 
   /**
    * Request constructor.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   *   Configuration factory.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state service.
    */
-  public function __construct(ConfigFactoryInterface $configFactory) {
-    $this->config = $configFactory->get('dropshark.settings');
+  public function __construct(StateInterface $state) {
+    $this->state = $state;
   }
 
   /**
@@ -33,7 +33,7 @@ class TestRequest implements RequestInterface {
   public function checkToken() {
     $result = new \stdClass();
 
-    if ($this->config->get('site_token') == 'valid_token') {
+    if ($this->state->get('dropshark.site_token') == 'valid_token') {
       $data = new \stdClass();
       $data->site_id = '0bb250ce-ffd5-4563-81fa-c8a165cd6af8';
       $result->data = $data;
