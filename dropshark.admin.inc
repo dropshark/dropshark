@@ -138,6 +138,8 @@ function dropshark_admin_config_register_validate($form, &$form_state) {
 function dropshark_admin_config_submit(&$element, &$form_state) {
   variable_set('dropshark_site_id', $form_state['values']['site_id']);
   variable_set('dropshark_site_token', $form_state['storage']['token']);
+  dropshark_handle_event('all', array(), TRUE);
+  dropshark_get_request()->setToken($form_state['storage']['token']);
 }
 
 /**
