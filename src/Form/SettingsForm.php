@@ -164,6 +164,7 @@ class SettingsForm extends FormBase {
       'dropshark.site_id' => $form_state->get('site_id'),
       'dropshark.site_token' => $form_state->get('site_token'),
     ]);
+    $this->collectorManager->collect(['all'], [], TRUE);
   }
 
   /**
