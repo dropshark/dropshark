@@ -104,4 +104,11 @@ class DropSharkRequest implements DropSharkRequestInterface {
     return $options;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function setToken($token) {
+    $this->auth = $token;
+  }
+
 }

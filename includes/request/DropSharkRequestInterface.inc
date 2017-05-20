@@ -39,4 +39,14 @@ interface DropSharkRequestInterface {
    */
   public function post($endpoint, array $data = array());
 
+  /**
+   * Set the authorization token.
+   *
+   * @param string|NULL $token
+   *   The token or NULL to clear the token.
+   *
+   * @return $this
+   */
+  public function setToken($token);
+
 }
