@@ -42,7 +42,7 @@ interface DropSharkRequestInterface {
   /**
    * Set the authorization token.
    *
-   * @param string|NULL $token
+   * @param string|null $token
    *   The token or NULL to clear the token.
    *
    * @return $this
