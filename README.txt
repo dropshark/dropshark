@@ -31,14 +31,12 @@ data. See https://github.com/jrgp/linfo.
 
 Installing Linfo can be done by either of the following means:
 
- * Use the Composer Manager project
-   (https://www.drupal.org/project/composer_manager) to manage the installation.
+ * If you use a Composer-based workflow, Linfo will be pull in automatically as
+   a dependency.
 
- * Install using the dropshark.make file included with the DropShark module.
-
- * Download and install v3.0.0 into your libraries folder so that the
+ * Download and install v3.0.1 into your libraries folder so that the
    standalone_autoload.php file is located at
-   sites/all/libraries/linfo/standalone_autoload.php.
+   libraries/linfo/standalone_autoload.php.
 
 CRON SETUP
 ----------
@@ -56,11 +54,10 @@ means:
    site ID. Example http://mysite.com/dropshark/collect?key=
    50e7b4ca-3576-435e-8ead-523ee9d4054e.
 
- * Configure Elysia Cron (https://www.drupal.org/project/elysia_cron) to invoke
-   the DropShark module's hook_cron() implementation as often as you wish.
-
-Also, you may disable the core cron functionality (including Elysia Cron) by
-setting a variable `variable_set('dropshark_cron', FALSE);`.
+Also, you may disable the core cron functionality via the "cron" element in the
+`dropshark.settings` configuration to `false`. There is no UI mechanism to set
+this, but it may be controlled by importing a config file with the desired value
+or setting via drush.
 
 TROUBLESHOOTING
 ---------------
