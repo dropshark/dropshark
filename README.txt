@@ -36,7 +36,7 @@ Installing Linfo can be done by either of the following means:
 
  * Install using the dropshark.make file included with the DropShark module.
 
- * Download and install v3.0.0 into your libraries folder so that the
+ * Download and install v3.0.1 into your libraries folder so that the
    standalone_autoload.php file is located at
    sites/all/libraries/linfo/standalone_autoload.php.
 
