@@ -26,15 +26,15 @@ class LoadCollector extends LinfoCollector {
       return;
     }
 
-    if (!$load = $this->parser->getLoad()) {
+    if (!$load = $this->getLinfo()->getParser()->getLoad()) {
       $data['code'] = 'unable_to_determine_load';
-      $this->queue->add($data);
+      $this->getQueue()->add($data);
       return;
     }
 
     $data = array_merge($data, $load);
     $data['code'] = CollectorInterface::STATUS_SUCCESS;
-    $this->queue->add($data);
+    $this->getQueue()->add($data);
   }
 
 }

@@ -3,8 +3,6 @@
 namespace Drupal\dropshark\Plugin\DropShark\Collector\System;
 
 use Drupal\dropshark\Collector\CollectorBase;
-use Drupal\dropshark\Util\LinfoAwareInterface;
-use Drupal\dropshark\Util\LinfoAwareTrait;
 
 /**
  * Class LinfoCollector.
@@ -12,9 +10,7 @@ use Drupal\dropshark\Util\LinfoAwareTrait;
  * Base class for collectors which utilize the Linfo library for collecting
  * server stats.
  */
-abstract class LinfoCollector extends CollectorBase implements LinfoAwareInterface {
-
-  use LinfoAwareTrait;
+abstract class LinfoCollector extends CollectorBase {
 
   /**
    * Check for Linfo library report error if not available.
@@ -28,10 +24,20 @@ abstract class LinfoCollector extends CollectorBase implements LinfoAwareInterfa
   protected function checkLinfo($data) {
     if (!$this->hasLinfo()) {
       $data['code'] = 'linfo_library_not_available';
-      $this->queue->add($data);
+      $this->getQueue()->add($data);
       return FALSE;
     }
     return TRUE;
+  }
+
+  /**
+   * Gets the Linfo instance.
+   *
+   * @return \Linfo\Linfo
+   *   The Linfo instance.
+   */
+  protected function getLinfo() {
+    return $this->container->get('dropshark.linfo_factory')->createInstance();
   }
 
   /**
@@ -41,7 +47,7 @@ abstract class LinfoCollector extends CollectorBase implements LinfoAwareInterfa
    *   Indicates if the Linfo library is available.
    */
   protected function hasLinfo() {
-    return $this->linfo && $this->parser;
+    return $this->getLinfo() && $this->getLinfo()->getParser();
   }
 
 }

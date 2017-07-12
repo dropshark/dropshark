@@ -4,8 +4,6 @@ namespace Drupal\dropshark\Plugin\DropShark\Collector\Drupal;
 
 use Drupal\dropshark\Collector\CollectorBase;
 use Drupal\dropshark\Collector\CollectorInterface;
-use Drupal\dropshark\Util\ModuleHandlerAwareInterface;
-use Drupal\dropshark\Util\ModuleHandlerAwareTrait;
 
 /**
  * Class UpdateStatusCollector.
@@ -17,9 +15,7 @@ use Drupal\dropshark\Util\ModuleHandlerAwareTrait;
  *   events = {"drupal"}
  * )
  */
-class UpdateStatusCollector extends CollectorBase implements ModuleHandlerAwareInterface {
-
-  use ModuleHandlerAwareTrait;
+class UpdateStatusCollector extends CollectorBase {
 
   /**
    * {@inheritdoc}
@@ -28,11 +24,11 @@ class UpdateStatusCollector extends CollectorBase implements ModuleHandlerAwareI
     $data = $this->defaultResult();
 
     try {
-      $this->moduleHandler->getModule('update');
+      $this->getModuleHandler()->getModule('update');
     }
     catch (\InvalidArgumentException $e) {
       $data['code'] = 'update_not_enabled';
-      $this->queue->add($data);
+      $this->getQueue()->add($data);
       return;
     }
 
@@ -68,7 +64,7 @@ class UpdateStatusCollector extends CollectorBase implements ModuleHandlerAwareI
       $data['code'] = 'unable_to_get_update_data';
     }
 
-    $this->queue->add($data);
+    $this->getQueue()->add($data);
   }
 
 }

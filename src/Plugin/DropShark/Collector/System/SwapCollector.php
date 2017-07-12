@@ -30,7 +30,7 @@ class SwapCollector extends MemoryCollector {
 
     if (empty($memory['swapInfo'][0])) {
       $data['code'] = 'unable_to_determine_swap';
-      $this->queue->add($data);
+      $this->getQueue()->add($data);
       return;
     }
 
@@ -40,7 +40,7 @@ class SwapCollector extends MemoryCollector {
     $data['used'] = $swap['used'];
     $data['size'] = $swap['size'];
     $data['used_percent'] = $swap['size'] ? $swap['used'] / $swap['size'] : NULL;
-    $this->queue->add($data);
+    $this->getQueue()->add($data);
   }
 
 }

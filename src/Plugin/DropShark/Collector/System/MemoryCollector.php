@@ -30,7 +30,7 @@ class MemoryCollector extends LinfoCollector {
 
     if (empty($memory)) {
       $data['code'] = 'unable_to_determine_memory';
-      $this->queue->add($data);
+      $this->getQueue()->add($data);
       return;
     }
 
@@ -38,7 +38,7 @@ class MemoryCollector extends LinfoCollector {
     $data['free'] = $memory['free'];
     $data['total'] = $memory['total'];
     $data['used_percent'] = 1 - $memory['free'] / $memory['total'];
-    $this->queue->add($data);
+    $this->getQueue()->add($data);
   }
 
   /**
@@ -50,7 +50,7 @@ class MemoryCollector extends LinfoCollector {
   protected function getData() {
     static $data = NULL;
     if ($data === NULL) {
-      $data = $this->parser->getRam();
+      $data = $this->getLinfo()->getParser()->getRam();
     }
     return $data;
   }

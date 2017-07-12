@@ -25,20 +25,20 @@ class OpcacheCollector extends CollectorBase {
 
     if (!function_exists('opcache_get_status')) {
       $data['code'] = 'no_opcache';
-      $this->queue->add($data);
+      $this->getQueue()->add($data);
       return;
     }
 
     if (!$status = opcache_get_status(FALSE)) {
       $data['code'] = 'opcache_not_enabled';
-      $this->queue->add($data);
+      $this->getQueue()->add($data);
       return;
     }
 
     $data += $status;
     $data['code'] = CollectorInterface::STATUS_SUCCESS;
 
-    $this->queue->add($data);
+    $this->getQueue()->add($data);
   }
 
 }

@@ -2,15 +2,13 @@
 
 namespace Drupal\dropshark\Collector;
 
-use Drupal\dropshark\Fingerprint\FingerprintAwareInterface;
-use Drupal\dropshark\Queue\QueueAwareInterface;
-use Drupal\dropshark\Util\ConfigAwareInterface;
-use Drupal\dropshark\Util\StateAwareInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Interface CollectorInterface.
  */
-interface CollectorInterface extends ConfigAwareInterface, FingerprintAwareInterface, QueueAwareInterface, StateAwareInterface {
+interface CollectorInterface extends ContainerAwareInterface, ContainerFactoryPluginInterface {
 
   /**
    * Indicates a successful collection of data.

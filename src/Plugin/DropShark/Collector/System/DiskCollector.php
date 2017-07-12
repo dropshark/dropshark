@@ -28,7 +28,7 @@ class DiskCollector extends LinfoCollector {
 
     if (!$disk = $this->defaultDisk()) {
       $data['code'] = 'unable_to_determine_disk';
-      $this->queue->add($data);
+      $this->getQueue()->add($data);
       return;
     }
     $data['ds_collector_id'] .= "|{$disk}";
@@ -41,7 +41,7 @@ class DiskCollector extends LinfoCollector {
     $data['used'] = $disk_info['used'];
     $data['size'] = $data['free'] + $data['used'];
     $data['used_percent'] = $data['used'] / $data['size'];
-    $this->queue->add($data);
+    $this->getQueue()->add($data);
   }
 
   /**
@@ -54,7 +54,7 @@ class DiskCollector extends LinfoCollector {
     static $data = NULL;
     if ($data === NULL) {
       $data = [];
-      foreach ($this->parser->getMounts() as $mount) {
+      foreach ($this->getLinfo()->getParser()->getMounts() as $mount) {
         $data[$mount['mount']] = $mount;
       }
     }

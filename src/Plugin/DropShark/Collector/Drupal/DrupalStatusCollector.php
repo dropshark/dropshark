@@ -4,8 +4,6 @@ namespace Drupal\dropshark\Plugin\DropShark\Collector\Drupal;
 
 use Drupal\dropshark\Collector\CollectorBase;
 use Drupal\dropshark\Collector\CollectorInterface;
-use Drupal\dropshark\Util\ModuleHandlerAwareInterface;
-use Drupal\dropshark\Util\ModuleHandlerAwareTrait;
 
 /**
  * Class DrupalStatusCollector.
@@ -17,9 +15,7 @@ use Drupal\dropshark\Util\ModuleHandlerAwareTrait;
  *   events = {"drupal"}
  * )
  */
-class DrupalStatusCollector extends CollectorBase implements ModuleHandlerAwareInterface {
-
-  use ModuleHandlerAwareTrait;
+class DrupalStatusCollector extends CollectorBase {
 
   /**
    * {@inheritdoc}
@@ -32,7 +28,8 @@ class DrupalStatusCollector extends CollectorBase implements ModuleHandlerAwareI
     drupal_load_updates();
 
     // Check run-time requirements and status information.
-    $requirements = $this->moduleHandler->invokeAll('requirements', ['runtime']);
+    $requirements = $this->getModuleHandler()
+      ->invokeAll('requirements', ['runtime']);
     ksort($requirements);
 
     // Count number of requirements at each status.
@@ -63,7 +60,7 @@ class DrupalStatusCollector extends CollectorBase implements ModuleHandlerAwareI
     $data['code'] = CollectorInterface::STATUS_SUCCESS;
     $data['requirements'] = $requirements;
     $data['severity'] = $severities;
-    $this->queue->add($data);
+    $this->getQueue()->add($data);
   }
 
 }
