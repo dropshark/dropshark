@@ -11,6 +11,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class CollectorBase extends PluginBase implements CollectorInterface {
 
+  const API_VERSION = '0.0.1';
+
   use ContainerAwareTrait;
 
   /**
@@ -70,6 +72,7 @@ abstract class CollectorBase extends PluginBase implements CollectorInterface {
     $result['ds_collector_id'] = "{$result['type']}|{$result['server']}";
     $result['code'] = 'unknown_error';
     $result['fingerprint'] = $this->getFingerPrint()->getFingerprint();
+    $result['ds_api_version'] = static::API_VERSION;
 
     return $result;
   }
