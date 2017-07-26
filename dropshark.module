@@ -7,6 +7,7 @@
 
 use Linfo\Linfo;
 
+define('DROPSHARK_API_VERSION', '0.0.1');
 define('DROPSHARK_HOST_DEFAULT', 'https://data.dropshark.io');
 define('DROPSHARK_QUEUE_DEFAULT', 'DropSharkDbQueue');
 define('DROPSHARK_QUEUE_LOCK_MAX_DEFAULT', 300);
