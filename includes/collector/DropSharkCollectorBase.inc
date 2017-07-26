@@ -129,6 +129,7 @@ abstract class DropSharkCollectorBase implements DropSharkCollectorInterface {
     $result['ds_collector_id'] = "{$result['type']}|{$result['server']}";
     $result['code'] = 'unknown_error';
     $result['fingerprint'] = dropshark_site_fingerprint();
+    $result['ds_api_version'] = '0.0.1';
 
     return $result;
   }
