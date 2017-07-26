@@ -32,7 +32,7 @@ class DropSharkDrupalUpdateStatusCollector extends DropSharkCollectorBase {
 
     if ($available = update_get_available(TRUE)) {
       module_load_include('inc', 'update', 'update.compare');
-      $info = update_calculate_project_data($available);
+      $data['projects'] = update_calculate_project_data($available);
 
       $status_map = array(
         1 => 'not_secure',
@@ -46,12 +46,11 @@ class DropSharkDrupalUpdateStatusCollector extends DropSharkCollectorBase {
         -4 => 'fetch_pending',
       );
 
-      foreach ($info as $project) {
+      foreach ($data['projects'] as $project) {
         $status = $project['status'];
         if (isset($status_map[$status])) {
           $data['status'][$status_map[$status]][] = $project['name'];
         }
-        $data['projects'][$project['name']] = $project['existing_version'];
       }
       $data['code'] = DropSharkCollectorInterface::STATUS_SUCCESS;
     }
